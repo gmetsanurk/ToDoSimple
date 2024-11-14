@@ -1,4 +1,4 @@
-struct Task {
+struct ToDoTask {
     var title: String
     var isCompleted: Bool
 }
