@@ -41,7 +41,7 @@ class HomeTableViewCell: UITableViewCell {
         ])
     }
     
-    func configure(with task: Task) {
+    func configure(with task: ToDoTask) {
         taskLabel.text = task.title
         checkBox.isSelected = task.isCompleted
     }
