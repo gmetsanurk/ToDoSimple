@@ -22,8 +22,7 @@ class HomeTableViewCell: UITableViewCell {
     }
     
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        setupViews()
+        nil
     }
     
     private func setupViews() {
