@@ -11,8 +11,8 @@ class HomeTableViewCell: UITableViewCell {
     let checkBox: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(systemName: "square"), for: .normal)
-        button.setImage(UIImage(systemName: "checkmark.square"), for: .selected)
+        button.setImage(UIImage(systemName: "circle"), for: .normal)
+        button.setImage(UIImage(systemName: "checkmark.circle"), for: .selected)
         return button
     }()
     
