@@ -1,5 +1,8 @@
-# ignore settings file for users profile
+# ignore settings xcode
 *.xcuserstate
-
-# ignore directories with localdata
 *.xcuserdata/
+
+# ignore workspaces and setting files
+*.xcworkspace/
+.idea/
+.DS_Store
