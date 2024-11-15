@@ -20,29 +20,16 @@ class EditTaskViewController: UIViewController {
         setupViews()
         configureTask()
         
-        let backButton = UIButton(type: .system)
-        backButton.setTitle("Back", for: .normal)
-        backButton.setTitleColor(.systemBlue, for: .normal)
-        backButton.titleLabel?.font = UIFont.systemFont(ofSize: 17)
-        
-        backButton.addAction(UIAction { [weak self] _ in
-            guard let self = self else { return }
-            if let updatedTitle = self.taskTitleTextField.text {
-                self.onSave?(updatedTitle)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(
+            title: "Back",
+            primaryAction: UIAction { [weak self] _ in
+                guard let self = self else { return }
+                if let updatedTitle = self.taskTitleTextField.text {
+                    self.onSave?(updatedTitle)
+                }
+                self.navigationController?.popViewController(animated: true)
             }
-            self.navigationController?.popViewController(animated: true)
-        }, for: .touchUpInside)
-        
-        let backButtonContainer = UIView(frame: CGRect(x: 0, y: 0, width: 60, height: 30))
-        backButtonContainer.addSubview(backButton)
-        backButton.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            backButton.centerYAnchor.constraint(equalTo: backButtonContainer.centerYAnchor),
-            backButton.leadingAnchor.constraint(equalTo: backButtonContainer.leadingAnchor)
-        ])
-        
-        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButtonContainer)
+        )
     }
     
     func setupViews() {
