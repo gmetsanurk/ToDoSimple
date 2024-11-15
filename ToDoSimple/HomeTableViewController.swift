@@ -14,7 +14,7 @@ class HomeTableViewController: UITableViewController {
         
         tableView.register(HomeTableViewCell.self, forCellReuseIdentifier: cellIdentifier)
         
-        navigationItem.title = "ToDoCell"
+        navigationItem.title = "To-Do List"
         navigationItem.rightBarButtonItem = UIBarButtonItem(systemItem: .add, primaryAction: UIAction { [weak self] _ in
             self?.addTask()
         })

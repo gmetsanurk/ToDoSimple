@@ -1,5 +1,5 @@
-# Игнорировать файлы настроек Xcode, относящиеся к пользователю
+# ignore settings file for users profile
 *.xcuserstate
 
-# Игнорировать директорию с локальными данными
+# ignore directories with localdata
 *.xcuserdata/
