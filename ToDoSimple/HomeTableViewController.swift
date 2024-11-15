@@ -73,4 +73,11 @@ class HomeTableViewController: UITableViewController {
             tableView.deleteRows(at: [indexPath], with: .automatic)
         }
     }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let task = tasks[indexPath.row]
+        let editTaskVC = EditTaskViewController()
+        editTaskVC.task = task
+        navigationController?.pushViewController(editTaskVC, animated: true)
+    }
 }
