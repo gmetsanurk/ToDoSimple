@@ -14,7 +14,9 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private func setupWindow() {
         window = UIWindow(frame: UIScreen.main.bounds)
-        window?.rootViewController = HomeTableViewController()
+        let homeVC = HomeTableViewController()
+        let navigationController = UINavigationController(rootViewController: homeVC)
+        window?.rootViewController = navigationController
         window?.makeKeyAndVisible()
     }
 }
