@@ -2,7 +2,6 @@
 *.xcuserstate
 *.xcuserdata/
 ToDoSimple.xcodeproj/xcuserdata/
-ToDoSimple.xcodeproj/project.pbxproj
 
 # ignore workspaces and setting files
 *.xcworkspace/
