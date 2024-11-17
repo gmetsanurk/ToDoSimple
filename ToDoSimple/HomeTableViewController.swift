@@ -1,10 +1,13 @@
 import UIKit
 
-class HomeTableViewController: UITableViewController {
+class HomeTableViewController: UITableViewController, UISearchResultsUpdating {
     
     var tasks = [ToDoTask(title: "Buy something", isCompleted: false),
                  ToDoTask(title: "Do the dishes", isCompleted: true),
                  ToDoTask(title: "Read a book", isCompleted: false)]
+    
+    var filteredTasks: [ToDoTask] = []
+    var isSearching = false
     
     let cellIdentifier = "ToDoCell"
     
@@ -18,6 +21,8 @@ class HomeTableViewController: UITableViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(systemItem: .add, primaryAction: UIAction { [weak self] _ in
             self?.addTask()
         })
+        
+        setupSearchController()
     }
     
     func addTask() {
@@ -37,6 +42,22 @@ class HomeTableViewController: UITableViewController {
         alert.addAction(cancelAction)
                 
         present(alert, animated: true)
+    }
+    
+    private func setupSearchController() {
+        let searchController = UISearchController(searchResultsController: nil)
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.placeholder = "Search Task"
+        navigationItem.searchController = searchController
+        definesPresentationContext = true
+    }
+    
+    private func filterTasks(for query: String) {
+        filteredTasks = tasks.filter { task in
+            task.title.lowercased().contains(query.lowercased())
+        }
+        tableView.reloadData()
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -79,5 +100,12 @@ class HomeTableViewController: UITableViewController {
         let editTaskVC = EditTaskViewController()
         editTaskVC.task = task
         navigationController?.pushViewController(editTaskVC, animated: true)
+    }
+}
+
+extension HomeTableViewController {
+    
+    func updateSearchResults(for searchController: UISearchController) {
+        <#code#>
     }
 }
