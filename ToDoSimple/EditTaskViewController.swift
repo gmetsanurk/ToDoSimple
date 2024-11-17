@@ -46,7 +46,7 @@ class EditTaskViewController: UIViewController {
         guard let task = task else {
             return
         }
-        taskTitleTextField.text = task.title
+        taskTitleTextField.text = task.todo
     }
     
     private func backButtonTapped() {
