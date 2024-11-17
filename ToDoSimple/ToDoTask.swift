@@ -1,10 +1,5 @@
 import Foundation
 
-/*struct ToDoTask {
-    var title: String
-    var isCompleted: Bool
-}*/
-
 struct ToDoTask: Codable {
     var id: Int
     var todo: String

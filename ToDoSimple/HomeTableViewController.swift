@@ -3,9 +3,8 @@ import Dispatch
 
 class HomeTableViewController: UITableViewController {
     
-    /*var tasks = [ToDoTask(title: "Buy something", isCompleted: false),
-                 ToDoTask(title: "Do the dishes", isCompleted: true),
-                 ToDoTask(title: "Read a book", isCompleted: false)]*/
+    private lazy var presenter = HomePresenter(view: self)
+    
     var todos: [ToDoTask] = []
     let todosImportManager = TodosImportManager()
     
@@ -141,5 +140,13 @@ extension HomeTableViewController: UISearchBarDelegate {
         searchBar.text = ""
         isSearching = false
         tableView.reloadData()
+    }
+}
+
+extension HomeTableViewController: AnyHomeView {
+    func present(screen: AnyScreen) {
+        if let screenController = screen as? (UIViewController & AnyScreen) {
+            self.presentController(screen: screenController)
+        }
     }
 }

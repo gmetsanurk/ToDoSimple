@@ -19,17 +19,7 @@ class EditTaskViewController: UIViewController {
         view.backgroundColor = .white
         setupViews()
         configureTask()
-        
-        navigationItem.leftBarButtonItem = UIBarButtonItem(
-            title: "Back",
-            primaryAction: UIAction { [weak self] _ in
-                guard let self = self else { return }
-                if let updatedTitle = self.taskTitleTextField.text {
-                    self.onSave?(updatedTitle)
-                }
-                self.navigationController?.popViewController(animated: true)
-            }
-        )
+        createLeftBarButtonItem()
     }
     
     func setupViews() {
@@ -40,6 +30,19 @@ class EditTaskViewController: UIViewController {
             taskTitleTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             taskTitleTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
+    }
+    
+    func createLeftBarButtonItem() {
+        navigationItem.leftBarButtonItem = UIBarButtonItem(
+            title: "Back",
+            primaryAction: UIAction { [weak self] _ in
+                guard let self = self else { return }
+                if let updatedTitle = self.taskTitleTextField.text {
+                    self.onSave?(updatedTitle)
+                }
+                self.navigationController?.popViewController(animated: true)
+            }
+        )
     }
     
     private func configureTask() {
