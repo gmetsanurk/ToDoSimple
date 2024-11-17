@@ -106,6 +106,12 @@ class HomeTableViewController: UITableViewController, UISearchResultsUpdating {
 extension HomeTableViewController {
     
     func updateSearchResults(for searchController: UISearchController) {
-        <#code#>
+        guard let query = searchController.searchBar.text, !query.isEmpty else {
+            isSearching = false
+            tableView.reloadData()
+            return
+        }
+        isSearching = true
+        filterTasks(for: query)
     }
 }
