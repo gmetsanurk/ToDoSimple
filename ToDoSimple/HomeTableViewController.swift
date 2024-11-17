@@ -6,7 +6,6 @@ class HomeTableViewController: UITableViewController {
     private lazy var presenter = HomePresenter(view: self)
     
     var todos: [ToDoTask] = []
-    let todosImportManager = TodosImportManager()
     
     var filteredTasks: [ToDoTask] = []
     var isSearching = false
@@ -31,22 +30,9 @@ class HomeTableViewController: UITableViewController {
         })
         
         setupSearchBar()
-        loadTodos()
+        presenter.handleImportTodos()
     }
     
-    private func loadTodos() {
-        todosImportManager.getTodos{ [weak self] result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let todos):
-                    self?.todos = todos
-                    self?.tableView.reloadData()
-                case .failure(let error):
-                    print("Failed to get todos: \(error)")
-                }
-            }
-        }
-    }
     
     func addTask() {
         let alert = UIAlertController(title: "New Task", message: "Enter task title", preferredStyle: .alert)
@@ -148,5 +134,10 @@ extension HomeTableViewController: AnyHomeView {
         if let screenController = screen as? (UIViewController & AnyScreen) {
             self.presentController(screen: screenController)
         }
+    }
+    
+    func fetchTodos(for todoTask: [ToDoTask]) {
+        self.todos = todoTask
+        self.tableView.reloadData()
     }
 }
