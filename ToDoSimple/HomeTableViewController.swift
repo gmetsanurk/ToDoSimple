@@ -6,7 +6,16 @@ class HomeTableViewController: UITableViewController {
                  ToDoTask(title: "Do the dishes", isCompleted: true),
                  ToDoTask(title: "Read a book", isCompleted: false)]
     
+    var filteredTasks: [ToDoTask] = []
+    var isSearching = false
+    
     let cellIdentifier = "ToDoCell"
+    
+    private let searchBar: UISearchBar = {
+        let searchBar = UISearchBar()
+        searchBar.placeholder = "Search Task"
+        return searchBar
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -18,6 +27,8 @@ class HomeTableViewController: UITableViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(systemItem: .add, primaryAction: UIAction { [weak self] _ in
             self?.addTask()
         })
+        
+        setupSearchBar()
     }
     
     func addTask() {
@@ -39,8 +50,21 @@ class HomeTableViewController: UITableViewController {
         present(alert, animated: true)
     }
     
+    private func setupSearchBar() {
+        searchBar.delegate = self
+        searchBar.sizeToFit()
+        tableView.tableHeaderView = searchBar
+    }
+    
+    private func filterTasks(for query: String) {
+        filteredTasks = tasks.filter { task in
+            task.title.lowercased().contains(query.lowercased())
+        }
+        tableView.reloadData()
+    }
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return tasks.count
+        return isSearching ? filteredTasks.count : tasks.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -48,7 +72,7 @@ class HomeTableViewController: UITableViewController {
             return UITableViewCell()
         }
         
-        let task = tasks[indexPath.row]
+        let task = isSearching ? filteredTasks[indexPath.row] : tasks[indexPath.row]
         cell.configure(with: task)
         
         let action = UIAction { [weak self] _ in
@@ -79,5 +103,25 @@ class HomeTableViewController: UITableViewController {
         let editTaskVC = EditTaskViewController()
         editTaskVC.task = task
         navigationController?.pushViewController(editTaskVC, animated: true)
+    }
+}
+
+extension HomeTableViewController: UISearchBarDelegate {
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        guard !searchText.isEmpty else {
+            isSearching = false
+            tableView.reloadData()
+            return
+        }
+        
+        isSearching = true
+        filterTasks(for: searchText)
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.text = ""
+        isSearching = false
+        tableView.reloadData()
     }
 }
