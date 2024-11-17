@@ -1,6 +1,6 @@
 import UIKit
 
-class HomeTableViewController: UITableViewController, UISearchResultsUpdating {
+class HomeTableViewController: UITableViewController {
     
     var tasks = [ToDoTask(title: "Buy something", isCompleted: false),
                  ToDoTask(title: "Do the dishes", isCompleted: true),
@@ -10,6 +10,12 @@ class HomeTableViewController: UITableViewController, UISearchResultsUpdating {
     var isSearching = false
     
     let cellIdentifier = "ToDoCell"
+    
+    private let searchBar: UISearchBar = {
+        let searchBar = UISearchBar()
+        searchBar.placeholder = "Search Task"
+        return searchBar
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,7 +28,7 @@ class HomeTableViewController: UITableViewController, UISearchResultsUpdating {
             self?.addTask()
         })
         
-        setupSearchController()
+        setupSearchBar()
     }
     
     func addTask() {
@@ -44,13 +50,10 @@ class HomeTableViewController: UITableViewController, UISearchResultsUpdating {
         present(alert, animated: true)
     }
     
-    private func setupSearchController() {
-        let searchController = UISearchController(searchResultsController: nil)
-        searchController.searchResultsUpdater = self
-        searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.placeholder = "Search Task"
-        navigationItem.searchController = searchController
-        definesPresentationContext = true
+    private func setupSearchBar() {
+        searchBar.delegate = self
+        searchBar.sizeToFit()
+        tableView.tableHeaderView = searchBar
     }
     
     private func filterTasks(for query: String) {
@@ -61,7 +64,7 @@ class HomeTableViewController: UITableViewController, UISearchResultsUpdating {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return tasks.count
+        return isSearching ? filteredTasks.count : tasks.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -69,7 +72,7 @@ class HomeTableViewController: UITableViewController, UISearchResultsUpdating {
             return UITableViewCell()
         }
         
-        let task = tasks[indexPath.row]
+        let task = isSearching ? filteredTasks[indexPath.row] : tasks[indexPath.row]
         cell.configure(with: task)
         
         let action = UIAction { [weak self] _ in
@@ -103,15 +106,22 @@ class HomeTableViewController: UITableViewController, UISearchResultsUpdating {
     }
 }
 
-extension HomeTableViewController {
+extension HomeTableViewController: UISearchBarDelegate {
     
-    func updateSearchResults(for searchController: UISearchController) {
-        guard let query = searchController.searchBar.text, !query.isEmpty else {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        guard !searchText.isEmpty else {
             isSearching = false
             tableView.reloadData()
             return
         }
+        
         isSearching = true
-        filterTasks(for: query)
+        filterTasks(for: searchText)
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.text = ""
+        isSearching = false
+        tableView.reloadData()
     }
 }
