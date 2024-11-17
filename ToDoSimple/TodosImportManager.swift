@@ -2,24 +2,30 @@ import Foundation
 
 class TodosImportManager {
     
-    public func getTodos(completion: @escaping (Result<[ToDoTask], Error>) -> Void) {
-        
-        guard let url = URL(string: "https://dummyjson.com/todos") else {
-            completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))
-            return
+    func getTodos(completion: @escaping (Result<[ToDoTask], Error>) -> Void) {
+            guard let url = URL(string: "https://dummyjson.com/todos") else {
+                completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))
+                return
+            }
+            
+            let task = URLSession.shared.dataTask(with: url) { data, response, error in
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+                
+                guard let data = data else {
+                    completion(.failure(NSError(domain: "No data", code: -2, userInfo: nil)))
+                    return
+                }
+                
+                do {
+                    let decodedResponse = try JSONDecoder().decode(ToDoResponse.self, from: data)
+                    completion(.success(decodedResponse.todos))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+            task.resume()
         }
-        
-        var request = URLRequest(url: url, timeoutInterval: Double.infinity)
-        request.httpMethod = "GET"
-        
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-          guard let data = data else {
-            print(String(describing: error))
-            return
-          }
-          print(String(data: data, encoding: .utf8)!)
-        }
-        
-        task.resume()
-    }
 }
