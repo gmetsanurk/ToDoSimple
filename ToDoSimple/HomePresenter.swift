@@ -37,9 +37,12 @@ class HomePresenter {
         }
     }
     
-    func handleFilterTodos(for todos: [ToDoTask], query: String) -> [ToDoTask] {
-        todos.filter { task in
-            task.todo.lowercased().contains(query.lowercased())
+    func handleFilterTodos(for todos: [ToDoTask], query: String, completion: @escaping ([ToDoTask]) -> Void) {
+        DispatchQueue.main.async {
+            let filteredTodos = todos.filter { task in
+                task.todo.lowercased().contains(query.lowercased())
+            }
+            completion(filteredTodos)
         }
     }
 }

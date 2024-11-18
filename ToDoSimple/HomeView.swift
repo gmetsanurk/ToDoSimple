@@ -141,7 +141,11 @@ extension HomeView: AnyHomeView {
     }
     
     private func filterTasks(for query: String) {
-        filteredTasks = presenter.handleFilterTodos(for: todos, query: query)
-        tableView.reloadData()
+        presenter.handleFilterTodos(for: todos, query: query) { result in
+            DispatchQueue.main.async {
+                self.filteredTasks = result
+                self.tableView.reloadData()
+            }
+        }
     }
 }
