@@ -1,5 +1,9 @@
 import UIKit
 
+struct Colors {
+    static let backgroundColor = UIColor.white
+}
+
 class HomeView: UITableViewController {
     
     private lazy var presenter = HomePresenter(view: self)
@@ -19,7 +23,7 @@ class HomeView: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = Colors.backgroundColor
         
         tableView.register(HomeTableViewCell.self, forCellReuseIdentifier: cellIdentifier)
         

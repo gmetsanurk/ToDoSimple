@@ -6,6 +6,13 @@ struct ToDoTask: Codable {
     var todo: String
     var completed: Bool
     var userId: Int
+    
+    init(id: Int, todo: String, completed: Bool, userId: Int) {
+        self.id = id
+        self.todo = todo
+        self.completed = completed
+        self.userId = userId
+    }
 }
 
 struct ToDoResponse: Codable {
@@ -31,7 +38,7 @@ extension CoreDataTasks {
     @NSManaged public var completed: Bool
     @NSManaged public var userId: Int
     
-    convenience init(code: String, fullName: String) async {
+    convenience init(id: Int, todo: String?, completed: Bool, userId: Int) async {
         let context = CoreDataManager.shared.persistentContainer.viewContext
         let entity = NSEntityDescription.entity(forEntityName: "CoreDataTasks", in: context)!
         self.init(entity: entity, insertInto: context)
