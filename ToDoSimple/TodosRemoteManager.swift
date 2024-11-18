@@ -1,6 +1,6 @@
 import Foundation
 
-class TodosImportManager {
+class TodosRemoteManager {
     
     func getTodos(completion: @escaping (Result<[ToDoTask], Error>) -> Void) {
         guard let url = URL(string: "https://dummyjson.com/todos") else {
