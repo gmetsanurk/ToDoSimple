@@ -33,7 +33,9 @@ class HomeView: UITableViewController {
         })
         
         setupSearchBar()
-        presenter.handleImportTodos()
+        Task {
+            await presenter.handleLocalOrRemoteTodos()
+        }
     }
     
     
