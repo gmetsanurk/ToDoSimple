@@ -1,5 +1,4 @@
 import UIKit
-import Dispatch
 
 class HomeView: UITableViewController {
     
@@ -59,12 +58,12 @@ class HomeView: UITableViewController {
         tableView.tableHeaderView = searchBar
     }
     
-    private func filterTasks(for query: String) {
+    /*private func filterTasks(for query: String) {
         filteredTasks = todos.filter { task in
             task.todo.lowercased().contains(query.lowercased())
         }
         tableView.reloadData()
-    }
+    }*/
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return isSearching ? filteredTasks.count : todos.count
@@ -139,5 +138,10 @@ extension HomeView: AnyHomeView {
     func fetchTodos(for todoTask: [ToDoTask]) {
         self.todos = todoTask
         self.tableView.reloadData()
+    }
+    
+    private func filterTasks(for query: String) {
+        filteredTasks = presenter.handleFilterTodos(for: todos, query: query)
+        tableView.reloadData()
     }
 }

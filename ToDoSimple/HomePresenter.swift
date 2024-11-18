@@ -1,4 +1,5 @@
 import UIKit
+import Dispatch
 
 protocol AnyScreen {
     func present(screen: AnyScreen)
@@ -33,6 +34,12 @@ class HomePresenter {
                     print("Failed to get todos: \(error)")
                 }
             }
+        }
+    }
+    
+    func handleFilterTodos(for todos: [ToDoTask], query: String) -> [ToDoTask] {
+        todos.filter { task in
+            task.todo.lowercased().contains(query.lowercased())
         }
     }
 }
