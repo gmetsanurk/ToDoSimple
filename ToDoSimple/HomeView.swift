@@ -1,7 +1,7 @@
 import UIKit
 import Dispatch
 
-class HomeTableViewController: UITableViewController {
+class HomeView: UITableViewController {
     
     private lazy var presenter = HomePresenter(view: self)
     
@@ -109,7 +109,7 @@ class HomeTableViewController: UITableViewController {
     }
 }
 
-extension HomeTableViewController: UISearchBarDelegate {
+extension HomeView: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         guard !searchText.isEmpty else {
@@ -129,7 +129,7 @@ extension HomeTableViewController: UISearchBarDelegate {
     }
 }
 
-extension HomeTableViewController: AnyHomeView {
+extension HomeView: AnyHomeView {
     func present(screen: AnyScreen) {
         if let screenController = screen as? (UIViewController & AnyScreen) {
             self.presentController(screen: screenController)

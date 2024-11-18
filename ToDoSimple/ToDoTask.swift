@@ -9,4 +9,7 @@ struct ToDoTask: Codable {
 
 struct ToDoResponse: Codable {
     var todos: [ToDoTask]
+    var total: Int
+    var skip: Int
+    var limit: Int
 }
