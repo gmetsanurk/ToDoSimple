@@ -99,11 +99,8 @@ extension CoreDataManager {
         }
     }
     
-<<<<<<< HEAD
+
     func getTodos() async throws -> [ToDoTask] {
-=======
-    func fetchTodos() async throws -> [ToDoTask] {
->>>>>>> 60edfe2 (do coreDataManager)
         let backgroundContext = self.context
 
         return try await backgroundContext.perform {
@@ -124,11 +121,8 @@ extension CoreDataManager {
             }
         }
     }
-<<<<<<< HEAD
     
     func isEmptyTodos() async -> Bool {
         await coreDataIsEmpty()
     }
-=======
->>>>>>> 60edfe2 (do coreDataManager)
 }
