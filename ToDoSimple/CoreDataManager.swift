@@ -12,7 +12,7 @@ class CoreDataManager {
     private init() { }
 
     lazy var persistentContainer: NSPersistentContainer = {
-        let container = NSPersistentContainer(name: "CoreDataTasks")
+        let container = NSPersistentContainer(name: "ToDoSimple")
         container.loadPersistentStores { storeDescription, error in
             if let error = error as NSError? {
                 fatalError("Unresolved error \(error), \(error.userInfo)")
@@ -99,7 +99,7 @@ extension CoreDataManager {
         }
     }
     
-    func fetchTodos() async throws -> [ToDoTask] {
+    func getTodos() async throws -> [ToDoTask] {
         let backgroundContext = self.context
 
         return try await backgroundContext.perform {
@@ -119,5 +119,9 @@ extension CoreDataManager {
                 throw CoreDataError.fetchFailed(error)
             }
         }
+    }
+    
+    func isEmptyTodos() async -> Bool {
+        await coreDataIsEmpty()
     }
 }

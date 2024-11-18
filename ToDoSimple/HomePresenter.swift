@@ -23,13 +23,32 @@ class HomePresenter {
     }
     
     let todosRemoteManager = TodosRemoteManager()
+    let todosCoreDataManager = CoreDataManager.shared
     
-    func handleImportTodos() {
+    func handleLocalOrRemoteTodos() async {
+        do {
+            if await todosCoreDataManager.isEmptyTodos() {
+                handleRemoteTodos()
+            } else {
+                let result = try await todosCoreDataManager.getTodos()
+                await MainActor.run {
+                    self.view.fetchTodos(for: result)
+                }
+            }
+        } catch {
+            print("Error handling todos: \(error)")
+        }
+    }
+    
+    func handleRemoteTodos() {
         todosRemoteManager.getTodos{ [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let succeedResult):
                     self?.view.fetchTodos(for: succeedResult)
+                    Task {
+                        try await self?.todosCoreDataManager.save(for: succeedResult)
+                    }
                 case .failure(let error):
                     print("Failed to get todos: \(error)")
                 }
