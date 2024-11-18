@@ -20,4 +20,4 @@ jobs:
         sudo xcodebuild -license accept
     - name: Build iOS app with Xcode
       run: |
-        xcodebuild clean build -workspace YourProject.xcworkspace -scheme YourScheme -sdk iphoneos -configuration Release | tee result.log
+        xcodebuild clean build -workspace YourProject.xcworkspace -scheme YourScheme -sdk iphoneos -configuration Release 
