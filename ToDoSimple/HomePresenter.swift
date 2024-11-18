@@ -23,6 +23,7 @@ class HomePresenter {
     }
     
     let todosRemoteManager = TodosRemoteManager()
+<<<<<<< HEAD
     let todosCoreDataManager = CoreDataManager.shared
     
     func handleLocalOrRemoteTodos() async {
@@ -41,6 +42,10 @@ class HomePresenter {
     }
     
     func handleRemoteTodos() {
+=======
+    
+    func handleImportTodos() {
+>>>>>>> 60edfe2 (do coreDataManager)
         todosRemoteManager.getTodos{ [weak self] result in
             DispatchQueue.main.async {
                 switch result {
