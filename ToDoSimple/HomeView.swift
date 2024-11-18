@@ -58,13 +58,6 @@ class HomeView: UITableViewController {
         tableView.tableHeaderView = searchBar
     }
     
-    /*private func filterTasks(for query: String) {
-        filteredTasks = todos.filter { task in
-            task.todo.lowercased().contains(query.lowercased())
-        }
-        tableView.reloadData()
-    }*/
-    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return isSearching ? filteredTasks.count : todos.count
     }

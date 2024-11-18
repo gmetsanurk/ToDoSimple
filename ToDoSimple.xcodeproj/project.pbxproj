@@ -48,8 +48,8 @@
 				6667AD112CEA1B8C00341E91 /* HomeView.swift */,
 				6667AD0F2CEA1B8C00341E91 /* HomePresenter.swift */,
 				6667AD122CEA1B8C00341E91 /* Info.plist */,
-				6667AD132CEA1B8C00341E91 /* TodosImportManager.swift */,
 				6667AD142CEA1B8C00341E91 /* ToDoTask.swift */,
+				6667AD132CEA1B8C00341E91 /* TodosImportManager.swift */,
 			);
 			path = ToDoSimple;
 			sourceTree = "<group>";
