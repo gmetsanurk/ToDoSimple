@@ -1,10 +1,5 @@
 import Foundation
 
-/*struct ToDoTask {
-    var title: String
-    var isCompleted: Bool
-}*/
-
 struct ToDoTask: Codable {
     var id: Int
     var todo: String
@@ -14,4 +9,7 @@ struct ToDoTask: Codable {
 
 struct ToDoResponse: Codable {
     var todos: [ToDoTask]
+    var total: Int
+    var skip: Int
+    var limit: Int
 }

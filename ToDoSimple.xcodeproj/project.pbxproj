@@ -6,30 +6,27 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		6667AD172CEA1B8C00341E91 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6667AD0D2CEA1B8C00341E91 /* AppDelegate.swift */; };
+		6667AD182CEA1B8C00341E91 /* EditTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6667AD0E2CEA1B8C00341E91 /* EditTaskViewController.swift */; };
+		6667AD192CEA1B8C00341E91 /* HomePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6667AD0F2CEA1B8C00341E91 /* HomePresenter.swift */; };
+		6667AD1A2CEA1B8C00341E91 /* HomeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6667AD102CEA1B8C00341E91 /* HomeTableViewCell.swift */; };
+		6667AD1B2CEA1B8C00341E91 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6667AD112CEA1B8C00341E91 /* HomeView.swift */; };
+		6667AD1C2CEA1B8C00341E91 /* TodosImportManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6667AD132CEA1B8C00341E91 /* TodosImportManager.swift */; };
+		6667AD1D2CEA1B8C00341E91 /* ToDoTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6667AD142CEA1B8C00341E91 /* ToDoTask.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
+		6667AD0D2CEA1B8C00341E91 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		6667AD0E2CEA1B8C00341E91 /* EditTaskViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTaskViewController.swift; sourceTree = "<group>"; };
+		6667AD0F2CEA1B8C00341E91 /* HomePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePresenter.swift; sourceTree = "<group>"; };
+		6667AD102CEA1B8C00341E91 /* HomeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTableViewCell.swift; sourceTree = "<group>"; };
+		6667AD112CEA1B8C00341E91 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		6667AD122CEA1B8C00341E91 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6667AD132CEA1B8C00341E91 /* TodosImportManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodosImportManager.swift; sourceTree = "<group>"; };
+		6667AD142CEA1B8C00341E91 /* ToDoTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoTask.swift; sourceTree = "<group>"; };
 		66D3D2BE2CE5E9B1009A8B76 /* ToDoSimple.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ToDoSimple.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		66D3D2D02CE5E9B2009A8B76 /* Exceptions for "ToDoSimple" folder in "ToDoSimple" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = 66D3D2BD2CE5E9B1009A8B76 /* ToDoSimple */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		66D3D2C02CE5E9B1009A8B76 /* ToDoSimple */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				66D3D2D02CE5E9B2009A8B76 /* Exceptions for "ToDoSimple" folder in "ToDoSimple" target */,
-			);
-			path = ToDoSimple;
-			sourceTree = "<group>";
-		};
-/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		66D3D2BB2CE5E9B1009A8B76 /* Frameworks */ = {
@@ -42,10 +39,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6667AD152CEA1B8C00341E91 /* ToDoSimple */ = {
+			isa = PBXGroup;
+			children = (
+				6667AD0D2CEA1B8C00341E91 /* AppDelegate.swift */,
+				6667AD0E2CEA1B8C00341E91 /* EditTaskViewController.swift */,
+				6667AD102CEA1B8C00341E91 /* HomeTableViewCell.swift */,
+				6667AD112CEA1B8C00341E91 /* HomeView.swift */,
+				6667AD0F2CEA1B8C00341E91 /* HomePresenter.swift */,
+				6667AD122CEA1B8C00341E91 /* Info.plist */,
+				6667AD132CEA1B8C00341E91 /* TodosImportManager.swift */,
+				6667AD142CEA1B8C00341E91 /* ToDoTask.swift */,
+			);
+			path = ToDoSimple;
+			sourceTree = "<group>";
+		};
 		66D3D2B52CE5E9B1009A8B76 = {
 			isa = PBXGroup;
 			children = (
-				66D3D2C02CE5E9B1009A8B76 /* ToDoSimple */,
+				6667AD152CEA1B8C00341E91 /* ToDoSimple */,
 				66D3D2BF2CE5E9B1009A8B76 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -72,9 +84,6 @@
 			buildRules = (
 			);
 			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				66D3D2C02CE5E9B1009A8B76 /* ToDoSimple */,
 			);
 			name = ToDoSimple;
 			packageProductDependencies = (
@@ -132,6 +141,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6667AD172CEA1B8C00341E91 /* AppDelegate.swift in Sources */,
+				6667AD182CEA1B8C00341E91 /* EditTaskViewController.swift in Sources */,
+				6667AD192CEA1B8C00341E91 /* HomePresenter.swift in Sources */,
+				6667AD1A2CEA1B8C00341E91 /* HomeTableViewCell.swift in Sources */,
+				6667AD1B2CEA1B8C00341E91 /* HomeView.swift in Sources */,
+				6667AD1C2CEA1B8C00341E91 /* TodosImportManager.swift in Sources */,
+				6667AD1D2CEA1B8C00341E91 /* ToDoTask.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

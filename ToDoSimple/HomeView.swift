@@ -1,13 +1,11 @@
 import UIKit
 import Dispatch
 
-class HomeTableViewController: UITableViewController {
+class HomeView: UITableViewController {
     
-    /*var tasks = [ToDoTask(title: "Buy something", isCompleted: false),
-                 ToDoTask(title: "Do the dishes", isCompleted: true),
-                 ToDoTask(title: "Read a book", isCompleted: false)]*/
+    private lazy var presenter = HomePresenter(view: self)
+    
     var todos: [ToDoTask] = []
-    let todosImportManager = TodosImportManager()
     
     var filteredTasks: [ToDoTask] = []
     var isSearching = false
@@ -32,22 +30,9 @@ class HomeTableViewController: UITableViewController {
         })
         
         setupSearchBar()
-        loadTodos()
+        presenter.handleImportTodos()
     }
     
-    private func loadTodos() {
-        todosImportManager.getTodos{ [weak self] result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let todos):
-                    self?.todos = todos
-                    self?.tableView.reloadData()
-                case .failure(let error):
-                    print("Failed to get todos: \(error)")
-                }
-            }
-        }
-    }
     
     func addTask() {
         let alert = UIAlertController(title: "New Task", message: "Enter task title", preferredStyle: .alert)
@@ -124,7 +109,7 @@ class HomeTableViewController: UITableViewController {
     }
 }
 
-extension HomeTableViewController: UISearchBarDelegate {
+extension HomeView: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         guard !searchText.isEmpty else {
@@ -141,5 +126,18 @@ extension HomeTableViewController: UISearchBarDelegate {
         searchBar.text = ""
         isSearching = false
         tableView.reloadData()
+    }
+}
+
+extension HomeView: AnyHomeView {
+    func present(screen: AnyScreen) {
+        if let screenController = screen as? (UIViewController & AnyScreen) {
+            self.presentController(screen: screenController)
+        }
+    }
+    
+    func fetchTodos(for todoTask: [ToDoTask]) {
+        self.todos = todoTask
+        self.tableView.reloadData()
     }
 }
