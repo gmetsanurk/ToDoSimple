@@ -22,10 +22,10 @@ class HomePresenter {
         self.view = view
     }
     
-    let todosImportManager = TodosImportManager()
+    let todosRemoteManager = TodosRemoteManager()
     
     func handleImportTodos() {
-        todosImportManager.getTodos{ [weak self] result in
+        todosRemoteManager.getTodos{ [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let succeedResult):
@@ -38,11 +38,13 @@ class HomePresenter {
     }
     
     func handleFilterTodos(for todos: [ToDoTask], query: String, completion: @escaping ([ToDoTask]) -> Void) {
-        DispatchQueue.main.async {
+        DispatchQueue.global(qos: .userInitiated).async {
             let filteredTodos = todos.filter { task in
                 task.todo.lowercased().contains(query.lowercased())
             }
-            completion(filteredTodos)
+            DispatchQueue.main.async {
+                completion(filteredTodos)
+            }
         }
     }
 }
