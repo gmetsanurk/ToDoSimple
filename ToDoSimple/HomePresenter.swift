@@ -66,4 +66,10 @@ class HomePresenter {
             }
         }
     }
+    
+    func handleSave(forOneTask task: ToDoTask) {
+        Task {
+            try await self.todosCoreDataManager.save(forOneTask: task)
+        }
+    }
 }
