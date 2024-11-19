@@ -13,9 +13,8 @@
 		6667AD1A2CEA1B8C00341E91 /* HomeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6667AD102CEA1B8C00341E91 /* HomeTableViewCell.swift */; };
 		6667AD1B2CEA1B8C00341E91 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6667AD112CEA1B8C00341E91 /* HomeView.swift */; };
 		6667AD1C2CEA1B8C00341E91 /* TodosRemoteManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6667AD132CEA1B8C00341E91 /* TodosRemoteManager.swift */; };
-		6667AD1D2CEA1B8C00341E91 /* ToDoTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6667AD142CEA1B8C00341E91 /* ToDoTask.swift */; };
-		6667AD312CEB4AD900341E91 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6667AD302CEB4AD900341E91 /* CoreDataManager.swift */; };
-		6667AD342CEB4BCE00341E91 /* ToDoSimple.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 6667AD322CEB4BCE00341E91 /* ToDoSimple.xcdatamodeld */; };
+		6685B76C2CED0BB90083C3E4 /* CoreDataManager in Frameworks */ = {isa = PBXBuildFile; productRef = 6685B76B2CED0BB90083C3E4 /* CoreDataManager */; };
+		668F10522CED114D0011111B /* ToDoSimple.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 668F10502CED114D0011111B /* ToDoSimple.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,9 +25,8 @@
 		6667AD112CEA1B8C00341E91 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		6667AD122CEA1B8C00341E91 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6667AD132CEA1B8C00341E91 /* TodosRemoteManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodosRemoteManager.swift; sourceTree = "<group>"; };
-		6667AD142CEA1B8C00341E91 /* ToDoTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoTask.swift; sourceTree = "<group>"; };
-		6667AD302CEB4AD900341E91 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
-		6667AD332CEB4BCE00341E91 /* ToDoSimple.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ToDoSimple.xcdatamodel; sourceTree = "<group>"; };
+		668472952CED11FC00FD4586 /* CoreDataManager */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = CoreDataManager; sourceTree = "<group>"; };
+		668F10512CED114D0011111B /* ToDoSimple.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ToDoSimple.xcdatamodel; sourceTree = "<group>"; };
 		66D3D2BE2CE5E9B1009A8B76 /* ToDoSimple.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ToDoSimple.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -37,6 +35,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6685B76C2CED0BB90083C3E4 /* CoreDataManager in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -52,18 +51,25 @@
 				6667AD112CEA1B8C00341E91 /* HomeView.swift */,
 				6667AD0F2CEA1B8C00341E91 /* HomePresenter.swift */,
 				6667AD122CEA1B8C00341E91 /* Info.plist */,
-				6667AD142CEA1B8C00341E91 /* ToDoTask.swift */,
 				6667AD132CEA1B8C00341E91 /* TodosRemoteManager.swift */,
-				6667AD322CEB4BCE00341E91 /* ToDoSimple.xcdatamodeld */,
-				6667AD302CEB4AD900341E91 /* CoreDataManager.swift */,
+				668F10502CED114D0011111B /* ToDoSimple.xcdatamodeld */,
 			);
 			path = ToDoSimple;
+			sourceTree = "<group>";
+		};
+		6685B7682CECEF9B0083C3E4 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				668472952CED11FC00FD4586 /* CoreDataManager */,
+			);
+			path = Packages;
 			sourceTree = "<group>";
 		};
 		66D3D2B52CE5E9B1009A8B76 = {
 			isa = PBXGroup;
 			children = (
 				6667AD152CEA1B8C00341E91 /* ToDoSimple */,
+				6685B7682CECEF9B0083C3E4 /* Packages */,
 				66D3D2BF2CE5E9B1009A8B76 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -93,6 +99,7 @@
 			);
 			name = ToDoSimple;
 			packageProductDependencies = (
+				6685B76B2CED0BB90083C3E4 /* CoreDataManager */,
 			);
 			productName = ToDoSimple;
 			productReference = 66D3D2BE2CE5E9B1009A8B76 /* ToDoSimple.app */;
@@ -147,15 +154,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				668F10522CED114D0011111B /* ToDoSimple.xcdatamodeld in Sources */,
 				6667AD172CEA1B8C00341E91 /* AppDelegate.swift in Sources */,
 				6667AD182CEA1B8C00341E91 /* EditTaskViewController.swift in Sources */,
-				6667AD342CEB4BCE00341E91 /* ToDoSimple.xcdatamodeld in Sources */,
 				6667AD192CEA1B8C00341E91 /* HomePresenter.swift in Sources */,
 				6667AD1A2CEA1B8C00341E91 /* HomeTableViewCell.swift in Sources */,
 				6667AD1B2CEA1B8C00341E91 /* HomeView.swift in Sources */,
 				6667AD1C2CEA1B8C00341E91 /* TodosRemoteManager.swift in Sources */,
-				6667AD312CEB4AD900341E91 /* CoreDataManager.swift in Sources */,
-				6667AD1D2CEA1B8C00341E91 /* ToDoTask.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -356,13 +361,20 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCSwiftPackageProductDependency section */
+		6685B76B2CED0BB90083C3E4 /* CoreDataManager */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = CoreDataManager;
+		};
+/* End XCSwiftPackageProductDependency section */
+
 /* Begin XCVersionGroup section */
-		6667AD322CEB4BCE00341E91 /* ToDoSimple.xcdatamodeld */ = {
+		668F10502CED114D0011111B /* ToDoSimple.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				6667AD332CEB4BCE00341E91 /* ToDoSimple.xcdatamodel */,
+				668F10512CED114D0011111B /* ToDoSimple.xcdatamodel */,
 			);
-			currentVersion = 6667AD332CEB4BCE00341E91 /* ToDoSimple.xcdatamodel */;
+			currentVersion = 668F10512CED114D0011111B /* ToDoSimple.xcdatamodel */;
 			path = ToDoSimple.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

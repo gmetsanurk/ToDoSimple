@@ -1,5 +1,6 @@
 import UIKit
 import Dispatch
+import CoreDataManager
 
 protocol AnyScreen {
     func present(screen: AnyScreen)

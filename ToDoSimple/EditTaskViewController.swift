@@ -1,4 +1,5 @@
 import UIKit
+import CoreDataManager
 
 class EditTaskViewController: UIViewController {
     

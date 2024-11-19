@@ -6,7 +6,7 @@ enum CoreDataError: Error {
     case fetchFailed(Error)
 }
 
-class CoreDataManager {
+public class CoreDataManager {
     public static let shared = CoreDataManager()
 
     private init() { }
@@ -72,7 +72,7 @@ class CoreDataManager {
 }
 
 extension CoreDataManager {
-    func save(forMultipleTasks todos: [ToDoTask]) async throws {
+    public func save(forMultipleTasks todos: [ToDoTask]) async throws {
         let backgroundContext = self.context
 
         try await backgroundContext.perform {
@@ -99,7 +99,7 @@ extension CoreDataManager {
         }
     }
     
-    func save(forOneTask task: ToDoTask) async throws {
+    public func save(forOneTask task: ToDoTask) async throws {
         let backgroundContext = self.context
 
         try await backgroundContext.perform {
@@ -135,7 +135,7 @@ extension CoreDataManager {
         }
     }
     
-    func delete(task: ToDoTask) async throws {
+    public func delete(task: ToDoTask) async throws {
         let backgroundContext = self.context
         try await backgroundContext.perform {
             let fetchRequest: NSFetchRequest<CoreDataTasks> = CoreDataTasks.fetchRequest()
@@ -150,7 +150,7 @@ extension CoreDataManager {
         }
     }
     
-    func getTodos() async throws -> [ToDoTask] {
+    public func getTodos() async throws -> [ToDoTask] {
         let backgroundContext = self.context
 
         return try await backgroundContext.perform {
@@ -172,7 +172,7 @@ extension CoreDataManager {
         }
     }
     
-    func getNextID() async throws -> Int {
+    public func getNextID() async throws -> Int {
         let backgroundContext = self.context
         
         return try await backgroundContext.perform {
@@ -200,7 +200,7 @@ extension CoreDataManager {
         }
     }
     
-    func isEmptyTodos() async -> Bool {
+    public func isEmptyTodos() async -> Bool {
         await coreDataIsEmpty()
     }
 }

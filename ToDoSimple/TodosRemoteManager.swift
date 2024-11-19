@@ -1,4 +1,5 @@
 import Foundation
+import CoreDataManager
 
 class TodosRemoteManager {
     
