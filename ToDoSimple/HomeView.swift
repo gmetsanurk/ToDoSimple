@@ -134,6 +134,23 @@ class HomeView: UITableViewController {
         let task = todos[indexPath.row]
         let editTaskVC = EditTaskViewController()
         editTaskVC.task = task
+        
+        editTaskVC.onSave = { [weak self] updatedTitle in
+            guard let self = self else {
+                return
+            }
+            
+            self.todos[indexPath.row].todo = updatedTitle
+            self.tableView.reloadRows(at: [indexPath], with: .automatic)
+            
+            Task {
+                do {
+                    self.presenter.handleSave(forOneTask: self.todos[indexPath.row])
+                    print("Task updated successfully.")
+                }
+            }
+        }
+        
         navigationController?.pushViewController(editTaskVC, animated: true)
     }
 }
