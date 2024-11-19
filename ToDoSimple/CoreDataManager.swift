@@ -72,7 +72,7 @@ class CoreDataManager {
 }
 
 extension CoreDataManager {
-    func save(for todos: [ToDoTask]) async throws {
+    func save(forMultipleTasks todos: [ToDoTask]) async throws {
         let backgroundContext = self.context
 
         try await backgroundContext.perform {
@@ -99,7 +99,57 @@ extension CoreDataManager {
         }
     }
     
+    func save(forOneTask task: ToDoTask) async throws {
+        let backgroundContext = self.context
 
+        try await backgroundContext.perform {
+            let fetchRequest: NSFetchRequest<CoreDataTasks> = CoreDataTasks.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "id == %d", task.id)
+            
+            let existingTasks = try backgroundContext.fetch(fetchRequest)
+            
+            let tasksEntity: CoreDataTasks
+            if let existingTask = existingTasks.first {
+                tasksEntity = existingTask
+            } else {
+                guard let newTask = NSEntityDescription.insertNewObject(
+                    forEntityName: "CoreDataTasks",
+                    into: backgroundContext
+                ) as? CoreDataTasks else {
+                    throw CoreDataError.entityInsertionFailed
+                }
+                tasksEntity = newTask
+            }
+
+            tasksEntity.id = task.id
+            tasksEntity.todo = task.todo
+            tasksEntity.completed = task.completed
+            tasksEntity.userId = task.userId
+
+            do {
+                try backgroundContext.save()
+            } catch {
+                backgroundContext.rollback()
+                throw CoreDataError.contextSaveFailed(error)
+            }
+        }
+    }
+    
+    func delete(task: ToDoTask) async throws {
+        let backgroundContext = self.context
+        try await backgroundContext.perform {
+            let fetchRequest: NSFetchRequest<CoreDataTasks> = CoreDataTasks.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "id == %d", task.id)
+            
+            let existingTasks = try backgroundContext.fetch(fetchRequest)
+            for taskEntity in existingTasks {
+                backgroundContext.delete(taskEntity)
+            }
+
+            try backgroundContext.save()
+        }
+    }
+    
     func getTodos() async throws -> [ToDoTask] {
         let backgroundContext = self.context
 

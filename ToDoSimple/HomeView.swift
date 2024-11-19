@@ -43,18 +43,27 @@ class HomeView: UITableViewController {
         let alert = UIAlertController(title: "New Task", message: "Enter task title", preferredStyle: .alert)
         alert.addTextField()
         
-        let addAction = UIAlertAction(title: "Add", style: .default) {[weak self] _ in
-            if let taskTitle = alert.textFields?.first?.text , !taskTitle.isEmpty {
-                let newTask = ToDoTask(id: 1, todo: taskTitle, completed: false, userId: 1)
-                self?.todos.append(newTask)
-                self?.tableView.reloadData()
+        let addAction = UIAlertAction(title: "Add", style: .default) { [weak self] _ in
+            guard let self = self,
+                  let taskTitle = alert.textFields?.first?.text,
+                  !taskTitle.isEmpty else { return }
+            
+            let newTask = ToDoTask(id: Int.random(in: 1...1000), todo: taskTitle, completed: false, userId: 1)
+            self.todos.append(newTask)
+            self.tableView.reloadData()
+            
+            Task {
+                do {
+                    self.presenter.handleSave(forOneTask: newTask)
+                    print("Task saved successfully.")
+                }
             }
         }
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
         alert.addAction(addAction)
         alert.addAction(cancelAction)
-                
+        
         present(alert, animated: true)
     }
     
@@ -77,9 +86,21 @@ class HomeView: UITableViewController {
         cell.configure(with: task)
         
         let action = UIAction { [weak self] _ in
-            self?.todos[indexPath.row].completed.toggle()
+            guard let self = self else { return }
+            
+            self.todos[indexPath.row].completed.toggle()
+            let updatedTask = self.todos[indexPath.row]
+            
             tableView.reloadRows(at: [indexPath], with: .automatic)
+            
+            Task {
+                do {
+                    self.presenter.handleSave(forOneTask: updatedTask)
+                    print("Task saved successfully.")
+                }
+            }
         }
+        
         
         cell.checkBox.addAction(action, for: .touchUpInside)
             
@@ -94,8 +115,16 @@ class HomeView: UITableViewController {
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
+            let taskToDelete = todos[indexPath.row]
             todos.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .automatic)
+            
+            Task {
+                do {
+                    self.presenter.handleDelete(forOneTask: taskToDelete)
+                    print("Task deleted successfully.")
+                }
+            }
         }
     }
     
@@ -134,7 +163,7 @@ extension HomeView: AnyHomeView {
         }
     }
     
-    func fetchTodos(for todoTask: [ToDoTask]) {
+    func fetchTodosForAnyView(for todoTask: [ToDoTask]) {
         self.todos = todoTask
         self.tableView.reloadData()
     }
