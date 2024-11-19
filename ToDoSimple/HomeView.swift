@@ -121,7 +121,7 @@ class HomeView: UITableViewController {
             
             Task {
                 do {
-                    self.presenter.handleSave(forOneTask: taskToDelete)
+                    self.presenter.handleDelete(forOneTask: taskToDelete)
                     print("Task deleted successfully.")
                 }
             }

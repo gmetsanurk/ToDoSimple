@@ -72,4 +72,10 @@ class HomePresenter {
             try await self.todosCoreDataManager.save(forOneTask: task)
         }
     }
+    
+    func handleDelete(forOneTask task: ToDoTask) {
+        Task {
+            try await self.todosCoreDataManager.delete(task: task)
+        }
+    }
 }
