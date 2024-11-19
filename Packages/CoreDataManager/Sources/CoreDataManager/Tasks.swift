@@ -1,13 +1,13 @@
 import Foundation
 import CoreData
 
-struct ToDoTask: Codable {
-    var id: Int
-    var todo: String
-    var completed: Bool
-    var userId: Int
+public struct ToDoTask: Codable {
+    public var id: Int
+    public var todo: String
+    public var completed: Bool
+    public var userId: Int
     
-    init(id: Int, todo: String, completed: Bool, userId: Int) {
+    public init(id: Int, todo: String, completed: Bool, userId: Int) {
         self.id = id
         self.todo = todo
         self.completed = completed
@@ -15,11 +15,11 @@ struct ToDoTask: Codable {
     }
 }
 
-struct ToDoResponse: Codable {
-    var todos: [ToDoTask]
-    var total: Int
-    var skip: Int
-    var limit: Int
+public struct ToDoResponse: Codable {
+    public var todos: [ToDoTask]
+    public var total: Int
+    public var skip: Int
+    public var limit: Int
 }
 
 @objc(CoreDataTasks)
