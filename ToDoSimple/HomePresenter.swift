@@ -78,4 +78,13 @@ class HomePresenter {
             try await self.todosCoreDataManager.delete(task: task)
         }
     }
+    
+    func handleTaskID() async -> Int {
+        do {
+            return  try await self.todosCoreDataManager.getNextID()
+        } catch {
+            print("ID getting error: \(error)")
+            return 1
+        }
+    }
 }
