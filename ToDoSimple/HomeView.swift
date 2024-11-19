@@ -134,7 +134,7 @@ extension HomeView: AnyHomeView {
         }
     }
     
-    func fetchTodos(for todoTask: [ToDoTask]) {
+    func fetchTodosForAnyView(for todoTask: [ToDoTask]) {
         self.todos = todoTask
         self.tableView.reloadData()
     }

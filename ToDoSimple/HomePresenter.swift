@@ -12,7 +12,7 @@ extension AnyScreen where Self: UIViewController {
 }
 
 protocol AnyHomeView: AnyScreen, AnyObject {
-    func fetchTodos(for todoTask: [ToDoTask])
+    func fetchTodosForAnyView(for todoTask: [ToDoTask])
 }
 
 class HomePresenter {
@@ -32,7 +32,7 @@ class HomePresenter {
             } else {
                 let result = try await todosCoreDataManager.getTodos()
                 await MainActor.run {
-                    self.view.fetchTodos(for: result)
+                    self.view.fetchTodosForAnyView(for: result)
                 }
             }
         } catch {
@@ -45,9 +45,9 @@ class HomePresenter {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let succeedResult):
-                    self?.view.fetchTodos(for: succeedResult)
+                    self?.view.fetchTodosForAnyView(for: succeedResult)
                     Task {
-                        try await self?.todosCoreDataManager.save(for: succeedResult)
+                        try await self?.todosCoreDataManager.save(forMultipleTasks: succeedResult)
                     }
                 case .failure(let error):
                     print("Failed to get todos: \(error)")
