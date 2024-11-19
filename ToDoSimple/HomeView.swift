@@ -44,15 +44,17 @@ class HomeView: UITableViewController {
         alert.addTextField()
         
         let addAction = UIAlertAction(title: "Add", style: .default) { [weak self] _ in
-            guard let self = self,
-                  let taskTitle = alert.textFields?.first?.text,
-                  !taskTitle.isEmpty else { return }
-            
-            let newTask = ToDoTask(id: Int.random(in: 1...1000), todo: taskTitle, completed: false, userId: 1)
-            self.todos.append(newTask)
-            self.tableView.reloadData()
-            
             Task {
+                guard let self = self,
+                      let taskTitle = alert.textFields?.first?.text,
+                      !taskTitle.isEmpty else { return }
+                let theIDNumber = await self.presenter.handleTaskID()
+                
+                let newTask = ToDoTask(id: theIDNumber, todo: taskTitle, completed: false, userId: 1)
+                self.todos.append(newTask)
+                self.tableView.reloadData()
+                
+                
                 do {
                     self.presenter.handleSave(forOneTask: newTask)
                     print("Task saved successfully.")

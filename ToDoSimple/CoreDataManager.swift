@@ -172,6 +172,34 @@ extension CoreDataManager {
         }
     }
     
+    func getNextID() async throws -> Int {
+        let backgroundContext = self.context
+        
+        return try await backgroundContext.perform {
+            let fetchRequest: NSFetchRequest<NSFetchRequestResult> = CoreDataTasks.fetchRequest()
+            fetchRequest.resultType = .dictionaryResultType
+            
+            let maxExpression = NSExpression(forFunction: "max:", arguments: [NSExpression(forKeyPath: "id")])
+            let maxIDExpressionDescription = NSExpressionDescription()
+            maxIDExpressionDescription.name = "maxID"
+            maxIDExpressionDescription.expression = maxExpression
+            maxIDExpressionDescription.expressionResultType = .integer32AttributeType
+            
+            fetchRequest.propertiesToFetch = [maxIDExpressionDescription]
+            
+            do {
+                if let result = try backgroundContext.fetch(fetchRequest) as? [[String: Int]],
+                   let maxID = result.first?["maxID"] {
+                    return maxID + 1
+                } else {
+                    return 1
+                }
+            } catch {
+                throw CoreDataError.fetchFailed(error)
+            }
+        }
+    }
+    
     func isEmptyTodos() async -> Bool {
         await coreDataIsEmpty()
     }
