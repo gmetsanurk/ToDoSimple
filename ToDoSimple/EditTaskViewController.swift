@@ -32,15 +32,16 @@ class EditTaskViewController: UIViewController {
         ])
     }
     
-    func createLeftBarButtonItem() {
+    private func createLeftBarButtonItem() {
         navigationItem.leftBarButtonItem = UIBarButtonItem(
             title: "Back",
             primaryAction: UIAction { [weak self] _ in
-                guard let self = self else { return }
-                if let updatedTitle = self.taskTitleTextField.text {
-                    self.onSave?(updatedTitle)
+                guard let self = self else {
+                    return
                 }
-                self.navigationController?.popViewController(animated: true)
+                Task {
+                    await self.handleBackAction()
+                }
             }
         )
     }
@@ -52,10 +53,23 @@ class EditTaskViewController: UIViewController {
         taskTitleTextField.text = task.todo
     }
     
-    private func backButtonTapped() {
-        if let updatedTitle = taskTitleTextField.text {
-            onSave?(updatedTitle)
+    private func handleBackAction() async {
+        guard var task = task else {
+            return
         }
+        
+        if let updatedTitle = taskTitleTextField.text, !updatedTitle.isEmpty {
+            task.todo = updatedTitle
+        }
+        
+        do {
+            try await CoreDataManager.shared.save(forOneTask: task)
+            print("Task saved successfully!")
+        } catch {
+            print("Failed to save task: \(error)")
+        }
+        
+        onSave?(task.todo)
         navigationController?.popViewController(animated: true)
     }
 }
