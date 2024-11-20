@@ -9,12 +9,23 @@ enum CoreDataError: Error {
 public class CoreDataManager {
     public static let shared = CoreDataManager()
     var persistentContainer: NSPersistentContainer
-
-    private init(container: NSPersistentContainer? = nil) {
+    private let modelName = "ToDoSimple"
+    
+    init(container: NSPersistentContainer? = nil) {
         if let container = container {
             self.persistentContainer = container
         } else {
-            persistentContainer = NSPersistentContainer(name: "ToDoSimple")
+            
+            guard let modelURL = Bundle.module.url(forResource: modelName, withExtension: "momd") else {
+                fatalError("File not found")
+            }
+            
+            guard let managedObjectModel = NSManagedObjectModel(contentsOf: modelURL) else {
+                fatalError("File not found")
+            }
+            
+            persistentContainer = NSPersistentContainer(name: modelName, managedObjectModel: managedObjectModel)
+            
             persistentContainer.loadPersistentStores { _, error in
                 if let error = error as NSError? {
                     fatalError("Unresolved error \(error), \(error.userInfo)")
@@ -23,19 +34,9 @@ public class CoreDataManager {
         }
     }
     
-    public func configureWith(container: NSPersistentContainer) {
+    /*public func configureWith(container: NSPersistentContainer) {
         self.persistentContainer = container
-    }
-
-    /*lazy var persistentContainer: NSPersistentContainer = {
-        let container = NSPersistentContainer(name: "ToDoSimple")
-        container.loadPersistentStores { storeDescription, error in
-            if let error = error as NSError? {
-                fatalError("Unresolved error \(error), \(error.userInfo)")
-            }
-        }
-        return container
-    }()*/
+    }*/
     
     private func saveContext () {
         let context = persistentContainer.viewContext

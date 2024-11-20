@@ -6,7 +6,8 @@ import PackageDescription
 let package = Package(
     name: "CoreDataManager",
     platforms: [
-        .iOS(.v15)
+        .iOS(.v15),
+        .macOS(.v15)
     ],
     products: [
         .library(
@@ -15,13 +16,15 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "CoreDataManager"),
+            name: "CoreDataManager",
+            path: "Sources/CoreDataManager",
+            resources: [
+                .process("ToDoSimple.xcdatamodeld")
+            ]
+        ),
         .testTarget(
             name: "CoreDataManagerTests",
-            dependencies: ["CoreDataManager"],
-            resources: [
-                .process("TestModel.xcdatamodeld")
-            ]
+            dependencies: ["CoreDataManager"]
         ),
     ],
     swiftLanguageModes: [.v5]
