@@ -13,8 +13,8 @@
 		6667AD1A2CEA1B8C00341E91 /* HomeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6667AD102CEA1B8C00341E91 /* HomeTableViewCell.swift */; };
 		6667AD1B2CEA1B8C00341E91 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6667AD112CEA1B8C00341E91 /* HomeView.swift */; };
 		6667AD1C2CEA1B8C00341E91 /* TodosRemoteManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6667AD132CEA1B8C00341E91 /* TodosRemoteManager.swift */; };
-		6685B76C2CED0BB90083C3E4 /* CoreDataManager in Frameworks */ = {isa = PBXBuildFile; productRef = 6685B76B2CED0BB90083C3E4 /* CoreDataManager */; };
 		668F10522CED114D0011111B /* ToDoSimple.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 668F10502CED114D0011111B /* ToDoSimple.xcdatamodeld */; };
+		66F04D922CEDDFDE002C4F80 /* CoreDataManager in Frameworks */ = {isa = PBXBuildFile; productRef = 66F04D912CEDDFDE002C4F80 /* CoreDataManager */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,7 +35,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6685B76C2CED0BB90083C3E4 /* CoreDataManager in Frameworks */,
+				66F04D922CEDDFDE002C4F80 /* CoreDataManager in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -70,6 +70,7 @@
 			children = (
 				6667AD152CEA1B8C00341E91 /* ToDoSimple */,
 				6685B7682CECEF9B0083C3E4 /* Packages */,
+				66F04D902CEDDFD9002C4F80 /* Frameworks */,
 				66D3D2BF2CE5E9B1009A8B76 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -80,6 +81,13 @@
 				66D3D2BE2CE5E9B1009A8B76 /* ToDoSimple.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		66F04D902CEDDFD9002C4F80 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -99,7 +107,7 @@
 			);
 			name = ToDoSimple;
 			packageProductDependencies = (
-				6685B76B2CED0BB90083C3E4 /* CoreDataManager */,
+				66F04D912CEDDFDE002C4F80 /* CoreDataManager */,
 			);
 			productName = ToDoSimple;
 			productReference = 66D3D2BE2CE5E9B1009A8B76 /* ToDoSimple.app */;
@@ -362,7 +370,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		6685B76B2CED0BB90083C3E4 /* CoreDataManager */ = {
+		66F04D912CEDDFDE002C4F80 /* CoreDataManager */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = CoreDataManager;
 		};

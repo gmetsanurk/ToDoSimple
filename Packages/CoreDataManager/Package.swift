@@ -18,7 +18,10 @@ let package = Package(
             name: "CoreDataManager"),
         .testTarget(
             name: "CoreDataManagerTests",
-            dependencies: ["CoreDataManager"]
+            dependencies: ["CoreDataManager"],
+            resources: [
+                .process("TestModel.xcdatamodeld")
+            ]
         ),
     ],
     swiftLanguageModes: [.v5]

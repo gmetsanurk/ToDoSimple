@@ -8,10 +8,26 @@ enum CoreDataError: Error {
 
 public class CoreDataManager {
     public static let shared = CoreDataManager()
+    var persistentContainer: NSPersistentContainer
 
-    private init() { }
+    private init(container: NSPersistentContainer? = nil) {
+        if let container = container {
+            self.persistentContainer = container
+        } else {
+            persistentContainer = NSPersistentContainer(name: "ToDoSimple")
+            persistentContainer.loadPersistentStores { _, error in
+                if let error = error as NSError? {
+                    fatalError("Unresolved error \(error), \(error.userInfo)")
+                }
+            }
+        }
+    }
+    
+    public func configureWith(container: NSPersistentContainer) {
+        self.persistentContainer = container
+    }
 
-    lazy var persistentContainer: NSPersistentContainer = {
+    /*lazy var persistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "ToDoSimple")
         container.loadPersistentStores { storeDescription, error in
             if let error = error as NSError? {
@@ -19,7 +35,7 @@ public class CoreDataManager {
             }
         }
         return container
-    }()
+    }()*/
     
     private func saveContext () {
         let context = persistentContainer.viewContext
