@@ -10,7 +10,6 @@ public class CoreDataManager {
     public static let shared = CoreDataManager()
     var persistentContainer: NSPersistentContainer
 
-    //private init() { }
     private init(container: NSPersistentContainer? = nil) {
         if let container = container {
             self.persistentContainer = container

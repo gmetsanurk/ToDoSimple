@@ -4,7 +4,6 @@ import CoreData
 
 class CoreDataTestBase: XCTestCase {
     var testPersistentContainer: NSPersistentContainer!
-    //var testPersistentContainer = CoreDataManager.shared.persistentContainer
     
     override func setUp() {
         super.setUp()
