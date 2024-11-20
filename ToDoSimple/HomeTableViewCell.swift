@@ -40,7 +40,7 @@ class HomeTableViewCell: UITableViewCell {
             taskLabel.leadingAnchor.constraint(equalTo: checkBox.trailingAnchor, constant: 16),
             taskLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             
-            contentView.heightAnchor.constraint(greaterThanOrEqualToConstant: 44)
+            contentView.heightAnchor.constraint(greaterThanOrEqualToConstant: 64)
         ])
     }
     
