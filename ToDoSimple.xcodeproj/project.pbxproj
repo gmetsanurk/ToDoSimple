@@ -7,14 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		664DF1262CEE27D8002C6CBB /* CoreDataManager in Frameworks */ = {isa = PBXBuildFile; productRef = 664DF1252CEE27D8002C6CBB /* CoreDataManager */; };
 		6667AD172CEA1B8C00341E91 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6667AD0D2CEA1B8C00341E91 /* AppDelegate.swift */; };
 		6667AD182CEA1B8C00341E91 /* EditTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6667AD0E2CEA1B8C00341E91 /* EditTaskViewController.swift */; };
 		6667AD192CEA1B8C00341E91 /* HomePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6667AD0F2CEA1B8C00341E91 /* HomePresenter.swift */; };
 		6667AD1A2CEA1B8C00341E91 /* HomeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6667AD102CEA1B8C00341E91 /* HomeTableViewCell.swift */; };
 		6667AD1B2CEA1B8C00341E91 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6667AD112CEA1B8C00341E91 /* HomeView.swift */; };
 		6667AD1C2CEA1B8C00341E91 /* TodosRemoteManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6667AD132CEA1B8C00341E91 /* TodosRemoteManager.swift */; };
-		668F10522CED114D0011111B /* ToDoSimple.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 668F10502CED114D0011111B /* ToDoSimple.xcdatamodeld */; };
-		66F04D922CEDDFDE002C4F80 /* CoreDataManager in Frameworks */ = {isa = PBXBuildFile; productRef = 66F04D912CEDDFDE002C4F80 /* CoreDataManager */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,8 +24,6 @@
 		6667AD112CEA1B8C00341E91 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		6667AD122CEA1B8C00341E91 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6667AD132CEA1B8C00341E91 /* TodosRemoteManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodosRemoteManager.swift; sourceTree = "<group>"; };
-		668472952CED11FC00FD4586 /* CoreDataManager */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = CoreDataManager; sourceTree = "<group>"; };
-		668F10512CED114D0011111B /* ToDoSimple.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ToDoSimple.xcdatamodel; sourceTree = "<group>"; };
 		66D3D2BE2CE5E9B1009A8B76 /* ToDoSimple.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ToDoSimple.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -35,7 +32,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				66F04D922CEDDFDE002C4F80 /* CoreDataManager in Frameworks */,
+				664DF1262CEE27D8002C6CBB /* CoreDataManager in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -52,25 +49,14 @@
 				6667AD0F2CEA1B8C00341E91 /* HomePresenter.swift */,
 				6667AD122CEA1B8C00341E91 /* Info.plist */,
 				6667AD132CEA1B8C00341E91 /* TodosRemoteManager.swift */,
-				668F10502CED114D0011111B /* ToDoSimple.xcdatamodeld */,
 			);
 			path = ToDoSimple;
-			sourceTree = "<group>";
-		};
-		6685B7682CECEF9B0083C3E4 /* Packages */ = {
-			isa = PBXGroup;
-			children = (
-				668472952CED11FC00FD4586 /* CoreDataManager */,
-			);
-			path = Packages;
 			sourceTree = "<group>";
 		};
 		66D3D2B52CE5E9B1009A8B76 = {
 			isa = PBXGroup;
 			children = (
 				6667AD152CEA1B8C00341E91 /* ToDoSimple */,
-				6685B7682CECEF9B0083C3E4 /* Packages */,
-				66F04D902CEDDFD9002C4F80 /* Frameworks */,
 				66D3D2BF2CE5E9B1009A8B76 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -81,13 +67,6 @@
 				66D3D2BE2CE5E9B1009A8B76 /* ToDoSimple.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		66F04D902CEDDFD9002C4F80 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -107,7 +86,7 @@
 			);
 			name = ToDoSimple;
 			packageProductDependencies = (
-				66F04D912CEDDFDE002C4F80 /* CoreDataManager */,
+				664DF1252CEE27D8002C6CBB /* CoreDataManager */,
 			);
 			productName = ToDoSimple;
 			productReference = 66D3D2BE2CE5E9B1009A8B76 /* ToDoSimple.app */;
@@ -137,6 +116,9 @@
 			);
 			mainGroup = 66D3D2B52CE5E9B1009A8B76;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				664DF1242CEE27D8002C6CBB /* XCLocalSwiftPackageReference "Packages/CoreDataManager" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 66D3D2BF2CE5E9B1009A8B76 /* Products */;
 			projectDirPath = "";
@@ -162,7 +144,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				668F10522CED114D0011111B /* ToDoSimple.xcdatamodeld in Sources */,
 				6667AD172CEA1B8C00341E91 /* AppDelegate.swift in Sources */,
 				6667AD182CEA1B8C00341E91 /* EditTaskViewController.swift in Sources */,
 				6667AD192CEA1B8C00341E91 /* HomePresenter.swift in Sources */,
@@ -369,25 +350,19 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		664DF1242CEE27D8002C6CBB /* XCLocalSwiftPackageReference "Packages/CoreDataManager" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/CoreDataManager;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
-		66F04D912CEDDFDE002C4F80 /* CoreDataManager */ = {
+		664DF1252CEE27D8002C6CBB /* CoreDataManager */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = CoreDataManager;
 		};
 /* End XCSwiftPackageProductDependency section */
-
-/* Begin XCVersionGroup section */
-		668F10502CED114D0011111B /* ToDoSimple.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				668F10512CED114D0011111B /* ToDoSimple.xcdatamodel */,
-			);
-			currentVersion = 668F10512CED114D0011111B /* ToDoSimple.xcdatamodel */;
-			path = ToDoSimple.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = 66D3D2B62CE5E9B1009A8B76 /* Project object */;
 }

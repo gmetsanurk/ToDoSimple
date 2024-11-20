@@ -94,7 +94,7 @@ class HomeView: UITableViewController {
             self.todos[indexPath.row].completed.toggle()
             let updatedTask = self.todos[indexPath.row]
             
-            tableView.reloadRows(at: [indexPath], with: .automatic)
+            cell.configure(with: self.todos[indexPath.row])
             
             Task {
                 do {
