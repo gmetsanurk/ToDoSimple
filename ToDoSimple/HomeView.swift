@@ -78,6 +78,7 @@ class HomeView: UITableViewController {
     private func setupSearchBar() {
         searchBar.delegate = self
         searchBar.sizeToFit()
+        searchBar.showsCancelButton = false
         tableView.tableHeaderView = searchBar
     }
     
@@ -189,21 +190,27 @@ extension HomeView {
 }
 
 extension HomeView: UISearchBarDelegate {
-    
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        guard !searchText.isEmpty else {
-            isSearching = false
-            tableView.reloadData()
-            return
-        }
-        
-        isSearching = true
-        filterTasks(for: searchText)
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        searchBar.showsCancelButton = true
     }
-    
+
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.showsCancelButton = false
         searchBar.text = ""
         isSearching = false
+        filteredTasks = []
+        tableView.reloadData()
+        searchBar.resignFirstResponder()
+    }
+
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchText.isEmpty {
+            isSearching = false
+            filteredTasks = []
+        } else {
+            isSearching = true
+            filteredTasks = todos.filter { $0.todo.lowercased().contains(searchText.lowercased()) }
+        }
         tableView.reloadData()
     }
 }
