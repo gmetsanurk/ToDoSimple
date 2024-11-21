@@ -2,7 +2,7 @@ import UIKit
 import CoreDataManager
 
 struct Colors {
-    static let backgroundColor = UIColor.white
+    static let backgroundColor = UIColor.systemBackground
 }
 
 class HomeView: UITableViewController {

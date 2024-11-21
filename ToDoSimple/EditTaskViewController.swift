@@ -1,36 +1,41 @@
 import UIKit
 import CoreDataManager
 
-class EditTaskViewController: UIViewController {
+class EditTaskViewController: UIViewController, UITextViewDelegate {
     
     var task: ToDoTask?
     var onSave: ((String) -> Void)?
     
-    private let taskTitleTextField: UITextField = {
-        let textField = UITextField()
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.borderStyle = .roundedRect
-        textField.placeholder = "Enter task title"
-        return textField
+    private let taskTitleTextView: UITextView = {
+        let textView = UITextView()
+        textView.translatesAutoresizingMaskIntoConstraints = false
+        textView.layer.borderWidth = 1
+        textView.layer.cornerRadius = 8
+        textView.font = UIFont.systemFont(ofSize: 18)
+        textView.textContainerInset = UIEdgeInsets(top: 10, left: 5, bottom: 10, right: 5)
+        return textView
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .white
+        view.backgroundColor = Colors.backgroundColor
         setupViews()
         configureTask()
         createLeftBarButtonItem()
+        taskTitleTextView.delegate = self
     }
     
     func setupViews() {
-        view.addSubview(taskTitleTextField)
+        view.addSubview(taskTitleTextView)
         
         NSLayoutConstraint.activate([
-            taskTitleTextField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-            taskTitleTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            taskTitleTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+            taskTitleTextView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            taskTitleTextView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            taskTitleTextView.heightAnchor.constraint(equalTo: view.heightAnchor),
+            taskTitleTextView.widthAnchor.constraint(equalTo: view.widthAnchor)
         ])
+        
     }
     
     private func createLeftBarButtonItem() {
@@ -51,7 +56,8 @@ class EditTaskViewController: UIViewController {
         guard let task = task else {
             return
         }
-        taskTitleTextField.text = task.todo
+        let attributedText = applyCustomTextStyle(for: task.todo)
+        taskTitleTextView.attributedText = attributedText
     }
     
     private func handleBackAction() async {
@@ -59,7 +65,7 @@ class EditTaskViewController: UIViewController {
             return
         }
         
-        if let updatedTitle = taskTitleTextField.text, !updatedTitle.isEmpty {
+        if let updatedTitle = taskTitleTextView.text, !updatedTitle.isEmpty {
             task.todo = updatedTitle
         }
         
@@ -72,5 +78,33 @@ class EditTaskViewController: UIViewController {
         
         onSave?(task.todo)
         navigationController?.popViewController(animated: true)
+    }
+    
+    private func applyCustomTextStyle(for text: String) -> NSAttributedString {
+        let fullText = text as NSString
+        
+        let headerFont = UIFont.boldSystemFont(ofSize: 24)
+        let regularFont = UIFont.systemFont(ofSize: 18)
+        let textColor = UIColor.label
+        
+        let attributedString = NSMutableAttributedString(string: fullText as String)
+        
+        let firstLineRange = (fullText.range(of: "\n") == NSRange(location: NSNotFound, length: 0)) ? NSRange(location: 0, length: fullText.length) : NSRange(location: 0, length: fullText.range(of: "\n").location)
+        
+        attributedString.addAttribute(.font, value: headerFont, range: firstLineRange)
+        attributedString.addAttribute(.foregroundColor, value: textColor, range: firstLineRange)
+        
+        let remainingTextRange = NSRange(location: firstLineRange.length, length: fullText.length - firstLineRange.length)
+        attributedString.addAttribute(.font, value: regularFont, range: remainingTextRange)
+        attributedString.addAttribute(.foregroundColor, value: textColor, range: remainingTextRange)
+        
+        return attributedString
+    }
+    
+    func textViewDidChange(_ textView: UITextView) {
+        guard let text = textView.text else { return }
+        
+        let attributedText = applyCustomTextStyle(for: text)
+        textView.attributedText = attributedText
     }
 }
