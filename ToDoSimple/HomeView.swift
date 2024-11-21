@@ -113,7 +113,9 @@ class HomeView: UITableViewController {
         cell.configure(with: task)
         
         let action = UIAction { [weak self] _ in
-            guard let self = self else { return }
+            guard let self = self else {
+                return
+            }
             
             self.todos[indexPath.row].completed.toggle()
             let updatedTask = self.todos[indexPath.row]
@@ -193,7 +195,9 @@ extension HomeView {
     }
     
     @objc private func handleLongPressGesture(_ gestureRecognizer: UILongPressGestureRecognizer) {
-        guard gestureRecognizer.state == .began else { return }
+        guard gestureRecognizer.state == .began else {
+            return
+        }
         
         let location = gestureRecognizer.location(in: tableView)
         
@@ -207,9 +211,23 @@ extension HomeView {
             self.shareTask(task)
         }
         
+        let deleteAction = UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
+            self?.todos.remove(at: indexPath.row)
+            self?.tableView.deleteRows(at: [indexPath], with: .automatic)
+            
+            Task {
+                do {
+                    self?.presenter.handleDelete(forOneTask: task)
+                    self?.updateTodosCountForTaskCountLabel()
+                    print("Task deleted successfully.")
+                }
+            }
+        }
+        
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
         
         alertController.addAction(shareAction)
+        alertController.addAction(deleteAction)
         alertController.addAction(cancelAction)
         
         present(alertController, animated: true)
