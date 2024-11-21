@@ -22,6 +22,12 @@ class HomeView: UITableViewController {
         return searchBar
     }()
     
+    private let bottomToolbar: UIToolbar = {
+        let toolbar = UIToolbar()
+        toolbar.translatesAutoresizingMaskIntoConstraints = false
+        return toolbar
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Colors.backgroundColor
@@ -29,16 +35,15 @@ class HomeView: UITableViewController {
         tableView.register(HomeTableViewCell.self, forCellReuseIdentifier: cellIdentifier)
         
         navigationItem.title = "To-Do List"
-        navigationItem.rightBarButtonItem = UIBarButtonItem(systemItem: .add, primaryAction: UIAction { [weak self] _ in
-            self?.addTask()
-        })
-        
+
         setupSearchBar()
+        setupBottomToolbar()
+        
+        
         Task {
             await presenter.handleLocalOrRemoteTodos()
         }
     }
-    
     
     func addTask() {
         let alert = UIAlertController(title: "New Task", message: "Enter task title", preferredStyle: .alert)
@@ -76,6 +81,15 @@ class HomeView: UITableViewController {
         tableView.tableHeaderView = searchBar
     }
     
+    private func setupBottomToolbar() {
+        let addTaskButton = UIBarButtonItem(systemItem: .compose, primaryAction: UIAction { [weak self] _ in
+            self?.addTask()
+        })
+        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        setToolbarItems([flexibleSpace, addTaskButton], animated: false)
+        navigationController?.isToolbarHidden = false
+    }
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return isSearching ? filteredTasks.count : todos.count
     }
@@ -106,7 +120,7 @@ class HomeView: UITableViewController {
         
         
         cell.checkBox.addAction(action, for: .touchUpInside)
-            
+        
         return cell
     }
     
