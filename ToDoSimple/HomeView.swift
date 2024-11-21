@@ -38,7 +38,6 @@ class HomeView: UITableViewController {
         setupSearchBar()
         setupBottomToolbar()
         
-        
         Task {
             await presenter.handleLocalOrRemoteTodos()
         }
@@ -128,7 +127,6 @@ class HomeView: UITableViewController {
                 }
             }
         }
-        
         
         cell.checkBox.addAction(action, for: .touchUpInside)
         applyLongGestureRecognizer(for: cell)
