@@ -32,7 +32,7 @@ class HomeTableViewCell: UITableViewCell {
         taskLabel.attributedText = attributedText
         checkBox.isSelected = task.completed
     }
-
+    
     private func applyCustomTextStyle(for text: String, isCompleted: Bool) -> NSAttributedString {
         let fullText = text as NSString
         let headerFont = UIFont.systemFont(ofSize: 17)
@@ -82,5 +82,5 @@ class HomeTableViewCell: UITableViewCell {
             contentView.heightAnchor.constraint(greaterThanOrEqualToConstant: 90)
         ])
     }
-
+    
 }
