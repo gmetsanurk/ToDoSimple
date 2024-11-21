@@ -2,7 +2,7 @@ name: ToDoSimple
 
 on: 
   push:
-    branches: [ master ]
+    branches: [ feature/github-actions ]
   pull_request:
     branches: [ master ]
 
@@ -17,7 +17,8 @@ jobs:
     - name: Set up Xcode
       run: |
         sudo xcode-select -s /Applications/Xcode_16.0.app
-        sudo xcodebuild -license accept
-    - name: Build iOS app with Xcode
+
+    - name: Run tests for coredatamanager
       run: |
-        xcodebuild clean build -workspace YourProject.xcworkspace -scheme YourScheme -sdk iphoneos -configuration Release 
+        cd Packages/CoreDataManager
+        xcodebuild test -scheme CoreDataManager -sdk macosx -destination "platform=macOS" 
