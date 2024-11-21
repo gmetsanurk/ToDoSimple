@@ -34,7 +34,7 @@ class HomeView: UITableViewController {
         tableView.register(HomeTableViewCell.self, forCellReuseIdentifier: cellIdentifier)
         
         navigationItem.title = "To-Do List"
-
+        
         setupSearchBar()
         setupBottomToolbar()
         
@@ -130,14 +130,8 @@ class HomeView: UITableViewController {
         
         
         cell.checkBox.addAction(action, for: .touchUpInside)
-        
+        applyLongGestureRecognizer(for: cell)
         return cell
-    }
-    
-    func toggleTaskCompletion(_ sender: UIButton) {
-        let taskIndex = sender.tag
-        todos[taskIndex].completed.toggle()
-        tableView.reloadData()
     }
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
@@ -183,17 +177,55 @@ class HomeView: UITableViewController {
 
 extension HomeView {
     
+    func toggleTaskCompletion(_ sender: UIButton) {
+        let taskIndex = sender.tag
+        todos[taskIndex].completed.toggle()
+        tableView.reloadData()
+    }
+    
     func updateTodosCountForTaskCountLabel() {
         taskCountLabel.text = "\(todos.count) tasks"
     }
     
+    func applyLongGestureRecognizer(for cell: UITableViewCell) {
+        let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressGesture(_:)))
+        cell.addGestureRecognizer(longPressRecognizer)
+    }
+    
+    @objc private func handleLongPressGesture(_ gestureRecognizer: UILongPressGestureRecognizer) {
+        guard gestureRecognizer.state == .began else { return }
+        
+        let location = gestureRecognizer.location(in: tableView)
+        
+        guard let indexPath = tableView.indexPathForRow(at: location) else { return }
+        
+        let task = todos[indexPath.row]
+        
+        let alertController = UIAlertController(title: "Share Task", message: "Would you like to share this task?", preferredStyle: .actionSheet)
+        
+        let shareAction = UIAlertAction(title: "Share", style: .default) { _ in
+            self.shareTask(task)
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+        
+        alertController.addAction(shareAction)
+        alertController.addAction(cancelAction)
+        
+        present(alertController, animated: true)
+    }
+    
+    private func shareTask(_ task: ToDoTask) {
+        let activityController = UIActivityViewController(activityItems: [task.todo], applicationActivities: nil)
+        present(activityController, animated: true)
+    }
 }
 
 extension HomeView: UISearchBarDelegate {
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
         searchBar.showsCancelButton = true
     }
-
+    
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchBar.showsCancelButton = false
         searchBar.text = ""
@@ -202,7 +234,7 @@ extension HomeView: UISearchBarDelegate {
         tableView.reloadData()
         searchBar.resignFirstResponder()
     }
-
+    
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchText.isEmpty {
             isSearching = false

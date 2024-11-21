@@ -35,7 +35,7 @@ class HomeTableViewCell: UITableViewCell {
 
     private func applyCustomTextStyle(for text: String, isCompleted: Bool) -> NSAttributedString {
         let fullText = text as NSString
-        let headerFont = UIFont.systemFont(ofSize: 18)
+        let headerFont = UIFont.systemFont(ofSize: 17)
         let regularFont = UIFont.systemFont(ofSize: 14)
         let headerColor = isCompleted ? UIColor.gray : UIColor.label
         let strikeThroughStyle = isCompleted ? NSUnderlineStyle.single.rawValue : 0
@@ -70,12 +70,12 @@ class HomeTableViewCell: UITableViewCell {
         contentView.addSubview(checkBox)
         
         NSLayoutConstraint.activate([
-            checkBox.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
+            checkBox.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
             checkBox.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             checkBox.widthAnchor.constraint(equalToConstant: 32),
             checkBox.heightAnchor.constraint(equalToConstant: 32),
             
-            taskLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
+            taskLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 14),
             taskLabel.leadingAnchor.constraint(equalTo: checkBox.trailingAnchor, constant: 16),
             taskLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             
