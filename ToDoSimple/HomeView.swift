@@ -22,6 +22,11 @@ class HomeView: UITableViewController {
         return searchBar
     }()
     
+    let taskCountLabel: UILabel = {
+        let uILabel = UILabel()
+        return uILabel
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Colors.backgroundColor
@@ -29,16 +34,15 @@ class HomeView: UITableViewController {
         tableView.register(HomeTableViewCell.self, forCellReuseIdentifier: cellIdentifier)
         
         navigationItem.title = "To-Do List"
-        navigationItem.rightBarButtonItem = UIBarButtonItem(systemItem: .add, primaryAction: UIAction { [weak self] _ in
-            self?.addTask()
-        })
-        
+
         setupSearchBar()
+        setupBottomToolbar()
+        
+        
         Task {
             await presenter.handleLocalOrRemoteTodos()
         }
     }
-    
     
     func addTask() {
         let alert = UIAlertController(title: "New Task", message: "Enter task title", preferredStyle: .alert)
@@ -58,6 +62,7 @@ class HomeView: UITableViewController {
                 
                 do {
                     self.presenter.handleSave(forOneTask: newTask)
+                    self.updateTodosCountForTaskCountLabel()
                     print("Task saved successfully.")
                 }
             }
@@ -74,6 +79,24 @@ class HomeView: UITableViewController {
         searchBar.delegate = self
         searchBar.sizeToFit()
         tableView.tableHeaderView = searchBar
+    }
+    
+    private func setupBottomToolbar() {
+        let addTaskButton = UIBarButtonItem(systemItem: .compose, primaryAction: UIAction { [weak self] _ in
+            self?.addTask()
+        })
+        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        
+        updateTodosCountForTaskCountLabel()
+        taskCountLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        taskCountLabel.textAlignment = .center
+        let taskCountItem = UIBarButtonItem(customView: taskCountLabel)
+        
+        taskCountLabel.adjustsFontSizeToFitWidth = true
+        taskCountLabel.minimumScaleFactor = 0.5
+        
+        setToolbarItems([flexibleSpace, taskCountItem, flexibleSpace, addTaskButton], animated: false)
+        navigationController?.isToolbarHidden = false
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -106,7 +129,7 @@ class HomeView: UITableViewController {
         
         
         cell.checkBox.addAction(action, for: .touchUpInside)
-            
+        
         return cell
     }
     
@@ -125,6 +148,7 @@ class HomeView: UITableViewController {
             Task {
                 do {
                     self.presenter.handleDelete(forOneTask: taskToDelete)
+                    self.updateTodosCountForTaskCountLabel()
                     print("Task deleted successfully.")
                 }
             }
@@ -154,6 +178,14 @@ class HomeView: UITableViewController {
         
         navigationController?.pushViewController(editTaskVC, animated: true)
     }
+}
+
+extension HomeView {
+    
+    func updateTodosCountForTaskCountLabel() {
+        taskCountLabel.text = "\(todos.count) tasks"
+    }
+    
 }
 
 extension HomeView: UISearchBarDelegate {
@@ -186,6 +218,7 @@ extension HomeView: AnyHomeView {
     func fetchTodosForAnyView(for todoTask: [ToDoTask]) {
         self.todos = todoTask
         self.tableView.reloadData()
+        updateTodosCountForTaskCountLabel()
     }
     
     private func filterTasks(for query: String) {
