@@ -6,6 +6,7 @@ class HomeTableViewCell: UITableViewCell {
     let taskLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.numberOfLines = 3
         return label
     }()
     
@@ -36,7 +37,8 @@ class HomeTableViewCell: UITableViewCell {
             checkBox.widthAnchor.constraint(equalToConstant: 32),
             checkBox.heightAnchor.constraint(equalToConstant: 32),
             
-            taskLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            taskLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
+            taskLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
             taskLabel.leadingAnchor.constraint(equalTo: checkBox.trailingAnchor, constant: 16),
             taskLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             
@@ -45,7 +47,33 @@ class HomeTableViewCell: UITableViewCell {
     }
     
     func configure(with task: ToDoTask) {
-        taskLabel.text = task.todo
+        let attributedText = applyCustomTextStyle(for: task.todo)
+        taskLabel.attributedText = attributedText
         checkBox.isSelected = task.completed
+    }
+    
+    private func applyCustomTextStyle(for text: String) -> NSAttributedString {
+        let fullText = text as NSString
+        let headerFont = UIFont.systemFont(ofSize: 18)
+        let regularFont = UIFont.systemFont(ofSize: 14)
+        let textColor = UIColor.label
+        
+        let attributedString = NSMutableAttributedString(string: fullText as String)
+        
+        if let firstLineEnd = text.range(of: "\n") {
+            let firstLineRange = NSRange(firstLineEnd, in: text)
+            
+            attributedString.addAttribute(.font, value: headerFont, range: NSRange(location: 0, length: firstLineRange.location))
+            attributedString.addAttribute(.foregroundColor, value: textColor, range: NSRange(location: 0, length: firstLineRange.location))
+            
+            let remainingRange = NSRange(location: firstLineRange.location, length: fullText.length - firstLineRange.location)
+            attributedString.addAttribute(.font, value: regularFont, range: remainingRange)
+            attributedString.addAttribute(.foregroundColor, value: textColor, range: remainingRange)
+        } else {
+            attributedString.addAttribute(.font, value: headerFont, range: NSRange(location: 0, length: fullText.length))
+            attributedString.addAttribute(.foregroundColor, value: textColor, range: NSRange(location: 0, length: fullText.length))
+        }
+        
+        return attributedString
     }
 }
