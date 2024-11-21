@@ -22,10 +22,9 @@ class HomeView: UITableViewController {
         return searchBar
     }()
     
-    private let bottomToolbar: UIToolbar = {
-        let toolbar = UIToolbar()
-        toolbar.translatesAutoresizingMaskIntoConstraints = false
-        return toolbar
+    let taskCountLabel: UILabel = {
+        let uILabel = UILabel()
+        return uILabel
     }()
     
     override func viewDidLoad() {
@@ -63,6 +62,7 @@ class HomeView: UITableViewController {
                 
                 do {
                     self.presenter.handleSave(forOneTask: newTask)
+                    self.updateTodosCountForTaskCountLabel()
                     print("Task saved successfully.")
                 }
             }
@@ -86,7 +86,16 @@ class HomeView: UITableViewController {
             self?.addTask()
         })
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-        setToolbarItems([flexibleSpace, addTaskButton], animated: false)
+        
+        updateTodosCountForTaskCountLabel()
+        taskCountLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        taskCountLabel.textAlignment = .center
+        let taskCountItem = UIBarButtonItem(customView: taskCountLabel)
+        
+        taskCountLabel.adjustsFontSizeToFitWidth = true
+        taskCountLabel.minimumScaleFactor = 0.5
+        
+        setToolbarItems([flexibleSpace, taskCountItem, flexibleSpace, addTaskButton], animated: false)
         navigationController?.isToolbarHidden = false
     }
     
@@ -139,6 +148,7 @@ class HomeView: UITableViewController {
             Task {
                 do {
                     self.presenter.handleDelete(forOneTask: taskToDelete)
+                    self.updateTodosCountForTaskCountLabel()
                     print("Task deleted successfully.")
                 }
             }
@@ -168,6 +178,14 @@ class HomeView: UITableViewController {
         
         navigationController?.pushViewController(editTaskVC, animated: true)
     }
+}
+
+extension HomeView {
+    
+    func updateTodosCountForTaskCountLabel() {
+        taskCountLabel.text = "\(todos.count) tasks"
+    }
+    
 }
 
 extension HomeView: UISearchBarDelegate {
@@ -200,6 +218,7 @@ extension HomeView: AnyHomeView {
     func fetchTodosForAnyView(for todoTask: [ToDoTask]) {
         self.todos = todoTask
         self.tableView.reloadData()
+        updateTodosCountForTaskCountLabel()
     }
     
     private func filterTasks(for query: String) {
