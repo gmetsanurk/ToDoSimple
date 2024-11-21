@@ -71,7 +71,7 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         
         do {
             try await CoreDataManager.shared.save(forOneTask: task)
-            print("Task saved successfully!")
+            print("Task saved successfully (from handleBack action)")
         } catch {
             print("Failed to save task: \(error)")
         }

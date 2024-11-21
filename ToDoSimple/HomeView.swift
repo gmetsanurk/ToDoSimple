@@ -59,11 +59,10 @@ class HomeView: UITableViewController {
                 self.todos.append(newTask)
                 self.tableView.reloadData()
                 
-                
                 do {
                     self.presenter.handleSave(forOneTask: newTask)
                     self.updateTodosCountForTaskCountLabel()
-                    print("Task saved successfully.")
+                    print("Task saved successfully (from addTask action)")
                 }
             }
         }
@@ -125,7 +124,7 @@ class HomeView: UITableViewController {
             Task {
                 do {
                     self.presenter.handleSave(forOneTask: updatedTask)
-                    print("Task saved successfully.")
+                    print("Task saved successfully (checkBox action)")
                 }
             }
         }
@@ -154,26 +153,11 @@ class HomeView: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let task = todos[indexPath.row]
-        let editTaskVC = EditTaskViewController()
-        editTaskVC.task = task
         
-        editTaskVC.onSave = { [weak self] updatedTitle in
-            guard let self = self else {
-                return
-            }
-            
+        openEditTaskViewController(from: self, task: task) { updatedTitle in
             self.todos[indexPath.row].todo = updatedTitle
             self.tableView.reloadRows(at: [indexPath], with: .automatic)
-            
-            Task {
-                do {
-                    self.presenter.handleSave(forOneTask: self.todos[indexPath.row])
-                    print("Task updated successfully.")
-                }
-            }
         }
-        
-        navigationController?.pushViewController(editTaskVC, animated: true)
     }
 }
 
@@ -205,7 +189,16 @@ extension HomeView {
         
         let task = todos[indexPath.row]
         
+        
         let alertController = UIAlertController(title: "Share Task", message: "Would you like to share this task?", preferredStyle: .actionSheet)
+        
+        let editAction = UIAlertAction(title: "Edit", style: .default) { _ in
+            
+            self.openEditTaskViewController(from: self, task: task) { updatedTitle in
+                self.todos[indexPath.row].todo = updatedTitle
+                self.tableView.reloadRows(at: [indexPath], with: .automatic)
+            }
+        }
         
         let shareAction = UIAlertAction(title: "Share", style: .default) { _ in
             self.shareTask(task)
@@ -226,6 +219,7 @@ extension HomeView {
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
         
+        alertController.addAction(editAction)
         alertController.addAction(shareAction)
         alertController.addAction(deleteAction)
         alertController.addAction(cancelAction)
@@ -236,6 +230,17 @@ extension HomeView {
     private func shareTask(_ task: ToDoTask) {
         let activityController = UIActivityViewController(activityItems: [task.todo], applicationActivities: nil)
         present(activityController, animated: true)
+    }
+    
+    func openEditTaskViewController(from viewController: UIViewController, task: ToDoTask, onSave: @escaping (String) -> Void) {
+        let editTaskVC = EditTaskViewController()
+        editTaskVC.task = task
+        
+        editTaskVC.onSave = { updatedTitle in
+            onSave(updatedTitle)
+        }
+        
+        viewController.navigationController?.pushViewController(editTaskVC, animated: true)
     }
 }
 
