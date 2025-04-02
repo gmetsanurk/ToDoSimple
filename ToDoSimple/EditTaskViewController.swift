@@ -1,10 +1,14 @@
 import UIKit
+import Combine
 import CoreDataManager
 
 class EditTaskViewController: UIViewController, UITextViewDelegate {
     
     var task: ToDoTask?
     var onSave: ((String) -> Void)?
+    
+    private var keyboardWillShowNotificationCancellable: AnyCancellable?
+    private var keyboardWillHideNotificationCancellable: AnyCancellable?
     
     private let taskTitleTextView: UITextView = {
         let textView = UITextView()
@@ -24,6 +28,8 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         configureTask()
         createLeftBarButtonItem()
         taskTitleTextView.delegate = self
+        
+        createKeyboard()
     }
     
     func setupViews() {
@@ -32,6 +38,7 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         NSLayoutConstraint.activate([
             taskTitleTextView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             taskTitleTextView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            
             taskTitleTextView.heightAnchor.constraint(equalTo: view.heightAnchor),
             taskTitleTextView.widthAnchor.constraint(equalTo: view.widthAnchor)
         ])
@@ -106,5 +113,42 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         
         let attributedText = applyCustomTextStyle(for: text)
         textView.attributedText = attributedText
+    }
+}
+
+extension EditTaskViewController {
+    
+    func createKeyboard() {
+        keyboardWillShowNotificationCancellable = NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] notification in
+                guard let self = self else { return }
+                if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
+                    let keyboardHeight = keyboardFrame.height
+                }
+            }
+        
+        keyboardWillHideNotificationCancellable = NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                guard let self = self else { return }
+                self.view.frame.origin.y = 0.0
+            }
+        createDoneButtonOnKeyboard()
+    }
+
+    func createDoneButtonOnKeyboard() {
+         let toolBar = UIToolbar()
+         toolBar.sizeToFit()
+         toolBar.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 44)
+         let doneButton = UIBarButtonItem(title: NSLocalizedString("home_view.done", comment: "Done keyboard button"), style: .done, target: self, action: #selector(doneButtonTapped))
+        //doneButton.accessibilityIdentifier = AccessibilityIdentifiers.EditTaskViewController.keyboardDone
+         let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+         toolBar.items = [flexSpace, doneButton]
+        taskTitleTextView.inputAccessoryView = toolBar
+     }
+    
+    @objc private func doneButtonTapped() {
+        taskTitleTextView.resignFirstResponder()
     }
 }
