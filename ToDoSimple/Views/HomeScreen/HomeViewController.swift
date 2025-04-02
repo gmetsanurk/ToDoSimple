@@ -9,11 +9,6 @@ class HomeView: UITableViewController {
     
     private lazy var presenter = HomePresenter(view: self)
     
-    var todos: [ToDoTask] = []
-    
-    var filteredTasks: [ToDoTask] = []
-    var isSearching = false
-    
     let cellIdentifier = "ToDoCell"
     
     private let searchBar: UISearchBar = {
@@ -43,25 +38,17 @@ class HomeView: UITableViewController {
         }
     }
     
+    //MARK: - should be completed
     func addTask() {
         let alert = UIAlertController(title: "New Task", message: "Enter task title", preferredStyle: .alert)
         alert.addTextField()
         
         let addAction = UIAlertAction(title: "Add", style: .default) { [weak self] _ in
+            guard let taskTitle = alert.textFields?.first?.text else { return }
+            
             Task {
-                guard let self = self,
-                      let taskTitle = alert.textFields?.first?.text,
-                      !taskTitle.isEmpty else { return }
-                let theIDNumber = await self.presenter.handleTaskID()
-                
-                let newTask = ToDoTask(id: theIDNumber, todo: taskTitle, completed: false, userId: 1)
-                self.todos.append(newTask)
-                self.tableView.reloadData()
-                
-                do {
-                    self.presenter.handleSave(forOneTask: newTask)
-                    self.updateTodosCountForTaskCountLabel()
-                    print("Task saved successfully (from addTask action)")
+                await self?.presenter.addTask(with: taskTitle) {
+                    self?.updateTodosCountForTaskCountLabel()
                 }
             }
         }
@@ -99,7 +86,7 @@ class HomeView: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return isSearching ? filteredTasks.count : todos.count
+        return presenter.getCurrentTasks().count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -107,7 +94,7 @@ class HomeView: UITableViewController {
             return UITableViewCell()
         }
         
-        let task = isSearching ? filteredTasks[indexPath.row] : todos[indexPath.row]
+        let task = presenter.getCurrentTasks()[indexPath.row]
         cell.configure(with: task)
         
         let action = UIAction { [weak self] _ in
@@ -115,10 +102,10 @@ class HomeView: UITableViewController {
                 return
             }
             
-            self.todos[indexPath.row].completed.toggle()
-            let updatedTask = self.todos[indexPath.row]
+            self.presenter.toggleTaskCompletion(at: indexPath.row)
+            let updatedTask = self.presenter.getCurrentTasks()[indexPath.row]
             
-            cell.configure(with: self.todos[indexPath.row])
+            cell.configure(with: updatedTask)
             
             Task {
                 do {
@@ -135,25 +122,18 @@ class HomeView: UITableViewController {
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            let taskToDelete = todos[indexPath.row]
-            todos.remove(at: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .automatic)
-            
-            Task {
-                do {
-                    self.presenter.handleDelete(forOneTask: taskToDelete)
-                    self.updateTodosCountForTaskCountLabel()
-                    print("Task deleted successfully.")
-                }
+            presenter.deleteTask(at: indexPath.row) {
+                tableView.deleteRows(at: [indexPath], with: .automatic)
+                self.updateTodosCountForTaskCountLabel()
             }
         }
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let task = todos[indexPath.row]
+        let task = presenter.getCurrentTasks()[indexPath.row]
         
         openEditTaskViewController(from: self, task: task) { updatedTitle in
-            self.todos[indexPath.row].todo = updatedTitle
+            self.presenter.updateTaskTitle(at: indexPath.row, newTitle: updatedTitle)
             self.tableView.reloadRows(at: [indexPath], with: .automatic)
         }
     }
@@ -163,38 +143,39 @@ extension HomeView {
     
     func toggleTaskCompletion(_ sender: UIButton) {
         let taskIndex = sender.tag
-        todos[taskIndex].completed.toggle()
-        tableView.reloadData()
+        presenter.toggleTaskCompletion(at: taskIndex) {
+            self.tableView.reloadData()
+        }
     }
     
     func updateTodosCountForTaskCountLabel() {
-        taskCountLabel.text = "\(todos.count) tasks"
+        taskCountLabel.text = "\(presenter.todosCount) tasks"
     }
-    
+
     func applyLongGestureRecognizer(for cell: UITableViewCell) {
         let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressGesture(_:)))
         cell.addGestureRecognizer(longPressRecognizer)
     }
-    
+
     @objc private func handleLongPressGesture(_ gestureRecognizer: UILongPressGestureRecognizer) {
         guard gestureRecognizer.state == .began else {
             return
         }
         
         let location = gestureRecognizer.location(in: tableView)
-        
         guard let indexPath = tableView.indexPathForRow(at: location) else { return }
         
-        let task = todos[indexPath.row]
-        
-        
+        presenter.handleLongPress(at: indexPath) { task in
+            self.showTaskActions(for: task, at: indexPath)
+        }
+    }
+
+    private func showTaskActions(for task: ToDoTask, at indexPath: IndexPath) {
         let alertController = UIAlertController(title: "Share Task", message: "Would you like to share this task?", preferredStyle: .actionSheet)
         
         let editAction = UIAlertAction(title: "Edit", style: .default) { _ in
-            
             self.openEditTaskViewController(from: self, task: task) { updatedTitle in
-                self.todos[indexPath.row].todo = updatedTitle
-                self.tableView.reloadRows(at: [indexPath], with: .automatic)
+                self.presenter.updateTask(at: indexPath.row, with: updatedTitle)
             }
         }
         
@@ -203,15 +184,9 @@ extension HomeView {
         }
         
         let deleteAction = UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
-            self?.todos.remove(at: indexPath.row)
-            self?.tableView.deleteRows(at: [indexPath], with: .automatic)
-            
-            Task {
-                do {
-                    self?.presenter.handleDelete(forOneTask: task)
-                    self?.updateTodosCountForTaskCountLabel()
-                    print("Task deleted successfully.")
-                }
+            self?.presenter.deleteTask(at: indexPath.row) {
+                self?.tableView.deleteRows(at: [indexPath], with: .automatic)
+                self?.updateTodosCountForTaskCountLabel()
             }
         }
         
@@ -250,21 +225,15 @@ extension HomeView: UISearchBarDelegate {
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchBar.showsCancelButton = false
         searchBar.text = ""
-        isSearching = false
-        filteredTasks = []
+        presenter.clearSearch()
         tableView.reloadData()
         searchBar.resignFirstResponder()
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        if searchText.isEmpty {
-            isSearching = false
-            filteredTasks = []
-        } else {
-            isSearching = true
-            filteredTasks = todos.filter { $0.todo.lowercased().contains(searchText.lowercased()) }
+        presenter.filterTasks(for: searchText) { filteredTasks in
+            self.tableView.reloadData()
         }
-        tableView.reloadData()
     }
 }
 
@@ -276,17 +245,12 @@ extension HomeView: AnyHomeView {
     }
     
     func fetchTodosForAnyView(for todoTask: [ToDoTask]) {
-        self.todos = todoTask
-        self.tableView.reloadData()
-        updateTodosCountForTaskCountLabel()
-    }
-    
-    private func filterTasks(for query: String) {
-        presenter.handleFilterTodos(for: todos, query: query) { result in
-            DispatchQueue.main.async {
-                self.filteredTasks = result
-                self.tableView.reloadData()
-            }
+        self.presenter.todos = todoTask
+            self.tableView.reloadData()
+            updateTodosCountForTaskCountLabel()
         }
+    
+    func reloadTasks() {
+        tableView.reloadData()
     }
 }
