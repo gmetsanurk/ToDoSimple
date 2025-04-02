@@ -52,8 +52,8 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
                 guard let self = self else {
                     return
                 }
-                Task {
-                    await self.handleBackAction()
+                Task { [weak self] in
+                    await self?.handleBackAction()
                 }
             }
         )
@@ -96,7 +96,12 @@ class EditTaskViewController: UIViewController, UITextViewDelegate {
         
         let attributedString = NSMutableAttributedString(string: fullText as String)
         
-        let firstLineRange = (fullText.range(of: "\n") == NSRange(location: NSNotFound, length: 0)) ? NSRange(location: 0, length: fullText.length) : NSRange(location: 0, length: fullText.range(of: "\n").location)
+        let firstLineRange: NSRange
+        if let firstLineEndIndex = text.firstIndex(of: "\n") {
+            firstLineRange = NSRange(text.startIndex..<firstLineEndIndex, in: text)
+        } else {
+            firstLineRange = NSRange(location: 0, length: text.count)
+        }
         
         attributedString.addAttribute(.font, value: headerFont, range: firstLineRange)
         attributedString.addAttribute(.foregroundColor, value: textColor, range: firstLineRange)
