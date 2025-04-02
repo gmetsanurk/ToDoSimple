@@ -1,0 +1,199 @@
+import UIKit
+import Dispatch
+import CoreDataManager
+
+protocol AnyScreen {
+    func present(screen: AnyScreen)
+}
+
+extension AnyScreen where Self: UIViewController {
+    func presentController(screen: AnyScreen & UIViewController) {
+        self.present(screen, animated: true)
+    }
+}
+
+protocol AnyHomeView: AnyScreen, AnyObject {
+    func fetchTodosForAnyView(for todoTask: [ToDoTask])
+    func reloadTasks()
+}
+
+class HomePresenter {
+    
+    var todos: [ToDoTask] = []
+    
+    var filteredTasks: [ToDoTask] = []
+    var isSearching = false
+    
+    var todosCount: Int {
+        return todos.count
+    }
+    
+    unowned var view: AnyHomeView!
+    
+    init(view: AnyHomeView) {
+        self.view = view
+    }
+    
+    let todosRemoteManager = TodosRemoteManager()
+    let todosCoreDataManager = CoreDataManager.shared
+}
+    
+extension HomePresenter {
+    
+    func addTask(with title: String, completion: @escaping () -> Void) async {
+        guard !title.isEmpty else { return }
+        
+        let taskID = await handleTaskID()
+        let newTask = ToDoTask(id: taskID, todo: title, completed: false, userId: 1)
+        
+        await handleSave(forOneTask: newTask)
+        view?.reloadTasks()
+        completion()
+    }
+    
+    func handleLocalOrRemoteTodos() async {
+        do {
+            if await todosCoreDataManager.isEmptyTodos() {
+                handleRemoteTodos()
+            } else {
+                let result = try await todosCoreDataManager.getTodos()
+                await MainActor.run {
+                    self.view.fetchTodosForAnyView(for: result)
+                }
+            }
+        } catch {
+            print("Error handling todos: \(error)")
+        }
+    }
+    
+    func handleRemoteTodos() {
+        todosRemoteManager.getTodos{ [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let succeedResult):
+                    self?.view.fetchTodosForAnyView(for: succeedResult)
+                    Task {
+                        try await self?.todosCoreDataManager.save(forMultipleTasks: succeedResult)
+                    }
+                case .failure(let error):
+                    print("Failed to get todos: \(error)")
+                }
+            }
+        }
+    }
+    
+    func handleFilterTodos(for todos: [ToDoTask], query: String, completion: @escaping ([ToDoTask]) -> Void) {
+        DispatchQueue.global(qos: .userInitiated).async {
+            let filteredTodos = todos.filter { task in
+                task.todo.lowercased().contains(query.lowercased())
+            }
+            DispatchQueue.main.async {
+                completion(filteredTodos)
+            }
+        }
+    }
+    
+    func handleSave(forOneTask task: ToDoTask) {
+        Task {
+            try await self.todosCoreDataManager.save(forOneTask: task)
+        }
+    }
+    
+    func handleDelete(forOneTask task: ToDoTask) {
+        Task {
+            try await self.todosCoreDataManager.delete(task: task)
+        }
+    }
+    
+    func handleTaskID() async -> Int {
+        do {
+            return  try await self.todosCoreDataManager.getNextID()
+        } catch {
+            print("ID getting error: \(error)")
+            return 1
+        }
+    }
+}
+
+extension HomePresenter {
+    func getCurrentTasks() -> [ToDoTask] {
+        return isSearching ? filteredTasks : todos
+    }
+    
+    func toggleTaskCompletion(at index: Int) {
+        todos[index].completed.toggle()
+        handleSave(forOneTask: todos[index])
+    }
+    
+    func updateTaskTitle(at index: Int, newTitle: String) {
+        if isSearching {
+            filteredTasks[index].todo = newTitle
+            if let originalIndex = todos.firstIndex(where: {$0.id == filteredTasks[index].id }) {
+                todos[originalIndex].todo = newTitle
+            }
+        } else {
+            todos[index].todo = newTitle
+        }
+        
+        Task {
+            await handleSave(forOneTask: todos[index])
+        }
+    }
+    
+    func deleteTask(at index: Int, completion: @escaping () -> Void) {
+        let taskToDelete = getCurrentTasks()[index]
+        
+        if isSearching {
+            if let originalIndex = todos.firstIndex(where: { $0.id == taskToDelete.id}) {
+                todos.remove(at: originalIndex)
+            }
+            filteredTasks.remove(at: index)
+        } else {
+            todos.remove(at: index)
+        }
+        
+        Task {
+            await handleDelete(forOneTask: taskToDelete)
+            DispatchQueue.main.async {
+                completion()
+            }
+        }
+    }
+
+}
+
+extension HomePresenter {
+    
+    func toggleTaskCompletion(at index: Int, completion: @escaping () -> Void) {
+        var task = isSearching ? filteredTasks[index] : todos[index]
+        task.completed.toggle()
+
+        Task {
+            await handleSave(forOneTask: task)
+            completion()
+        }
+    }
+    
+    func handleLongPress(at indexPath: IndexPath, completion: @escaping (ToDoTask) -> Void) {
+        let task = todos[indexPath.row]
+        completion(task)
+    }
+    
+    func updateTask(at index: Int, with title: String) {
+        todos[index].todo = title
+        Task {
+            await handleSave(forOneTask: todos[index])
+        }
+    }
+    
+    
+    func filterTasks(for query: String, completion: @escaping ([ToDoTask]) -> Void) {
+        let result = todos.filter { $0.todo.lowercased().contains(query.lowercased()) }
+        completion(result)
+    }
+
+    func clearSearch() {
+        self.filteredTasks = []
+    }
+    
+}
