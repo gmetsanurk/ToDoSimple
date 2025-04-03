@@ -146,13 +146,6 @@ class HomeView: UITableViewController {
 
 extension HomeView {
     
-    func toggleTaskCompletion(_ sender: UIButton) {
-        let taskIndex = sender.tag
-        presenter.toggleTaskCompletion(at: taskIndex) {
-            self.tableView.reloadData()
-        }
-    }
-    
     func updateTodosCountForTaskCountLabel() {
         taskCountLabel.text = "\(presenter.todosCount) tasks"
     }
@@ -236,7 +229,10 @@ extension HomeView: UISearchBarDelegate {
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        presenter.filterTasks(for: searchText) { filteredTasks in
+        presenter.isSearching = !searchText.isEmpty
+        presenter.filterTasks(for: searchText) {[weak self] filteredTasks in
+            guard let self = self else { return }
+            self.presenter.filteredTasks = filteredTasks
             self.tableView.reloadData()
         }
     }
