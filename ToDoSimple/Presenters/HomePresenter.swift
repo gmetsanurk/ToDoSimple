@@ -124,11 +124,6 @@ extension HomePresenter {
         return isSearching ? filteredTasks : todos
     }
     
-    func toggleTaskCompletion(at index: Int) {
-        todos[index].completed.toggle()
-        handleSave(forOneTask: todos[index])
-    }
-    
     func updateTaskTitle(at index: Int, newTitle: String) {
         if isSearching {
             filteredTasks[index].todo = newTitle
@@ -168,6 +163,11 @@ extension HomePresenter {
 
 extension HomePresenter {
     
+    func toggleTaskCompletion(at index: Int) {
+        todos[index].completed.toggle()
+        handleSave(forOneTask: todos[index])
+    }
+    
     func toggleTaskCompletion(at index: Int, completion: @escaping () -> Void) {
         var task = isSearching ? filteredTasks[index] : todos[index]
         task.completed.toggle()
@@ -198,6 +198,7 @@ extension HomePresenter {
     
     func clearSearch() {
         self.filteredTasks = []
+        self.isSearching = false
     }
     
 }
