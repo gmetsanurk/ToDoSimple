@@ -37,18 +37,22 @@ class HomePresenter {
     let todosRemoteManager = TodosRemoteManager()
     let todosCoreDataManager = CoreDataManager.shared
 }
-    
+
 extension HomePresenter {
     
     func addTask(with title: String, completion: @escaping () -> Void) async {
-        guard !title.isEmpty else { return }
+        guard !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
         
-        let taskID = await handleTaskID()
-        let newTask = ToDoTask(id: taskID, todo: title, completed: false, userId: 1)
+        let id = await handleTaskID()
+        let newTask = ToDoTask(id: id, todo: title, completed: false, userId: 1)
+        
+        todos.append(newTask)
         
         await handleSave(forOneTask: newTask)
-        view?.reloadTasks()
-        completion()
+        
+        DispatchQueue.main.async {
+            completion()
+        }
     }
     
     func handleLocalOrRemoteTodos() async {
@@ -159,7 +163,7 @@ extension HomePresenter {
             }
         }
     }
-
+    
 }
 
 extension HomePresenter {
@@ -167,7 +171,7 @@ extension HomePresenter {
     func toggleTaskCompletion(at index: Int, completion: @escaping () -> Void) {
         var task = isSearching ? filteredTasks[index] : todos[index]
         task.completed.toggle()
-
+        
         Task {
             await handleSave(forOneTask: task)
             completion()
@@ -191,7 +195,7 @@ extension HomePresenter {
         let result = todos.filter { $0.todo.lowercased().contains(query.lowercased()) }
         completion(result)
     }
-
+    
     func clearSearch() {
         self.filteredTasks = []
     }
