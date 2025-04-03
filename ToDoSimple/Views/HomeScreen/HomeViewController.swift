@@ -38,17 +38,20 @@ class HomeView: UITableViewController {
         }
     }
     
-    //MARK: - should be completed
     func addTask() {
         let alert = UIAlertController(title: "New Task", message: "Enter task title", preferredStyle: .alert)
         alert.addTextField()
         
         let addAction = UIAlertAction(title: "Add", style: .default) { [weak self] _ in
-            guard let taskTitle = alert.textFields?.first?.text else { return }
-            
+            guard let self = self,
+                  let taskTitle = alert.textFields?.first?.text,
+                  !taskTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+                return
+            }
             Task {
-                await self?.presenter.addTask(with: taskTitle) {
-                    self?.updateTodosCountForTaskCountLabel()
+                await self.presenter.addTask(with: taskTitle) {
+                    self.tableView.reloadData()
+                    self.updateTodosCountForTaskCountLabel()
                 }
             }
         }
@@ -57,7 +60,9 @@ class HomeView: UITableViewController {
         alert.addAction(addAction)
         alert.addAction(cancelAction)
         
-        present(alert, animated: true)
+        DispatchQueue.main.async {
+            self.present(alert, animated: true)
+        }
     }
     
     private func setupSearchBar() {
@@ -151,12 +156,12 @@ extension HomeView {
     func updateTodosCountForTaskCountLabel() {
         taskCountLabel.text = "\(presenter.todosCount) tasks"
     }
-
+    
     func applyLongGestureRecognizer(for cell: UITableViewCell) {
         let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressGesture(_:)))
         cell.addGestureRecognizer(longPressRecognizer)
     }
-
+    
     @objc private func handleLongPressGesture(_ gestureRecognizer: UILongPressGestureRecognizer) {
         guard gestureRecognizer.state == .began else {
             return
@@ -169,7 +174,7 @@ extension HomeView {
             self.showTaskActions(for: task, at: indexPath)
         }
     }
-
+    
     private func showTaskActions(for task: ToDoTask, at indexPath: IndexPath) {
         let alertController = UIAlertController(title: "Share Task", message: "Would you like to share this task?", preferredStyle: .actionSheet)
         
@@ -246,9 +251,9 @@ extension HomeView: AnyHomeView {
     
     func fetchTodosForAnyView(for todoTask: [ToDoTask]) {
         self.presenter.todos = todoTask
-            self.tableView.reloadData()
-            updateTodosCountForTaskCountLabel()
-        }
+        self.tableView.reloadData()
+        updateTodosCountForTaskCountLabel()
+    }
     
     func reloadTasks() {
         tableView.reloadData()
