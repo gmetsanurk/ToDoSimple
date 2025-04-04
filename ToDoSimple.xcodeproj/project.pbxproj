@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		6617CFC22D9D29BB00E5E3C9 /* EditTaskPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6617CFC12D9D29B500E5E3C9 /* EditTaskPresenter.swift */; };
 		6617CFC42D9D2A5400E5E3C9 /* HomeViewTVProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6617CFC32D9D2A1300E5E3C9 /* HomeViewTVProtocol.swift */; };
+		6617CFC62D9FE73A00E5E3C9 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6617CFC52D9FE73500E5E3C9 /* Coordinator.swift */; };
 		664DF1262CEE27D8002C6CBB /* CoreDataManager in Frameworks */ = {isa = PBXBuildFile; productRef = 664DF1252CEE27D8002C6CBB /* CoreDataManager */; };
 		6667AD172CEA1B8C00341E91 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6667AD0D2CEA1B8C00341E91 /* AppDelegate.swift */; };
 		6667AD182CEA1B8C00341E91 /* EditTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6667AD0E2CEA1B8C00341E91 /* EditTaskViewController.swift */; };
@@ -21,6 +22,7 @@
 /* Begin PBXFileReference section */
 		6617CFC12D9D29B500E5E3C9 /* EditTaskPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTaskPresenter.swift; sourceTree = "<group>"; };
 		6617CFC32D9D2A1300E5E3C9 /* HomeViewTVProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewTVProtocol.swift; sourceTree = "<group>"; };
+		6617CFC52D9FE73500E5E3C9 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
 		6667AD0D2CEA1B8C00341E91 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6667AD0E2CEA1B8C00341E91 /* EditTaskViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTaskViewController.swift; sourceTree = "<group>"; };
 		6667AD0F2CEA1B8C00341E91 /* HomePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePresenter.swift; sourceTree = "<group>"; };
@@ -83,6 +85,7 @@
 			isa = PBXGroup;
 			children = (
 				6667AD0D2CEA1B8C00341E91 /* AppDelegate.swift */,
+				6617CFC52D9FE73500E5E3C9 /* Coordinator.swift */,
 				6667AD132CEA1B8C00341E91 /* TodosRemoteManager.swift */,
 				6617CFBC2D9D26B400E5E3C9 /* Presenters */,
 				6617CFBA2D9D269D00E5E3C9 /* Views */,
@@ -190,6 +193,7 @@
 				6667AD1A2CEA1B8C00341E91 /* HomeTableViewCell.swift in Sources */,
 				6667AD1B2CEA1B8C00341E91 /* HomeViewController.swift in Sources */,
 				6667AD1C2CEA1B8C00341E91 /* TodosRemoteManager.swift in Sources */,
+				6617CFC62D9FE73A00E5E3C9 /* Coordinator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
