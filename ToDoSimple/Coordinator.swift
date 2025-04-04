@@ -5,7 +5,6 @@ protocol Coordinator {
     func openEditTaskScreen(onTaskSelected: @escaping EditTaskScreenHandler)
 }
 
-
 private typealias HomeViewClass = HomeView
 private typealias EditTaskClass = EditTaskViewController
 
@@ -20,7 +19,7 @@ struct UIKitCoordinator: Coordinator {
         if let someScreen = window.rootViewController, let presentedViewController = someScreen.presentedViewController as? EditTaskViewController {
             presentedViewController.dismiss(animated: true)
         } else {
-            window.rootViewController = HomeViewClass()
+            window.rootViewController = HomeViewClass(coordinator: self)
             window.makeKeyAndVisible()
         }
     }
@@ -28,10 +27,11 @@ struct UIKitCoordinator: Coordinator {
     func openEditTaskScreen(onTaskSelected: @escaping EditTaskScreenHandler) {
         let editTaskScreen = EditTaskClass()
         editTaskScreen.onTaskSelected = onTaskSelected
+        
         if let homeView = window.rootViewController as? AnyHomeView {
             homeView.present(screen: editTaskScreen)
         } else if window.rootViewController == nil {
-            window.rootViewController = HomeViewClass()
+            window.rootViewController = HomeViewClass(coordinator: self)
             window.makeKeyAndVisible()
             (window.rootViewController as? AnyScreen)?.present(screen: editTaskScreen)
         }

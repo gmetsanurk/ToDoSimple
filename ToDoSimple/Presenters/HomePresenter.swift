@@ -29,9 +29,11 @@ class HomePresenter {
     }
     
     unowned var view: AnyHomeView!
+    let coordinator: Coordinator
     
-    init(view: AnyHomeView) {
+    init(view: AnyHomeView, coordinator: Coordinator) {
         self.view = view
+        self.coordinator = coordinator
     }
     
     let todosRemoteManager = TodosRemoteManager()
@@ -40,6 +42,18 @@ class HomePresenter {
 
 extension HomePresenter {
     
+    func handleOpenEditTask(onTaskSelected: ((ToDoTask?) -> Void)!) async {
+        coordinator.openEditTaskScreen(onTaskSelected: { [weak self] updatedTask in
+            self?.handleTaskSelected(updatedTask: updatedTask)
+            print("Task selected, returning to Home Screen")
+            self?.coordinator.openHomeScreen()
+        })
+    }
+    
+    func handleTaskSelected(updatedTask: ToDoTask) {
+        updateTaskTitle(at: updatedTask.id, newTitle: updatedTask.todo)
+    }
+    
     func addTask(with title: String, completion: @escaping () -> Void) async {
         guard !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
         
@@ -47,7 +61,6 @@ extension HomePresenter {
         let newTask = ToDoTask(id: id, todo: title, completed: false, userId: 1)
         
         todos.append(newTask)
-        
         await handleSave(forOneTask: newTask)
         
         DispatchQueue.main.async {
@@ -55,7 +68,7 @@ extension HomePresenter {
         }
     }
     
-    func handleLocalOrRemoteTodos() async {
+    func chooseLocalOrRemoteTodos() async {
         do {
             if await todosCoreDataManager.isEmptyTodos() {
                 handleRemoteTodos()

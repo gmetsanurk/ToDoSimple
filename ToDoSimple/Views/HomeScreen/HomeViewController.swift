@@ -7,7 +7,19 @@ struct Colors {
 
 class HomeView: UITableViewController {
     
-    private lazy var presenter = HomePresenter(view: self)
+    private let coordinator: Coordinator
+    private lazy var presenter: HomePresenter = {
+        return HomePresenter(view: self, coordinator: coordinator)
+    }()
+    
+    init(coordinator: Coordinator) {
+        self.coordinator = coordinator
+        super.init(style: .plain)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     let cellIdentifier = "ToDoCell"
     
@@ -34,7 +46,7 @@ class HomeView: UITableViewController {
         setupBottomToolbar()
         
         Task {
-            await presenter.handleLocalOrRemoteTodos()
+            await presenter.chooseLocalOrRemoteTodos()
         }
     }
     
@@ -64,6 +76,8 @@ class HomeView: UITableViewController {
             self.present(alert, animated: true)
         }
     }
+    
+    
     
     private func setupSearchBar() {
         searchBar.delegate = self
@@ -137,10 +151,11 @@ class HomeView: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let task = presenter.getCurrentTasks()[indexPath.row]
         
-        openEditTaskViewController(from: self, task: task) { updatedTitle in
+        /*openEditTaskViewController(from: self, task: task) { updatedTitle in
             self.presenter.updateTaskTitle(at: indexPath.row, newTitle: updatedTitle)
             self.tableView.reloadRows(at: [indexPath], with: .automatic)
-        }
+        }*/
+        self.showEditTaskViewController(for: task)
     }
 }
 
@@ -172,9 +187,10 @@ extension HomeView {
         let alertController = UIAlertController(title: "Share Task", message: "Would you like to share this task?", preferredStyle: .actionSheet)
         
         let editAction = UIAlertAction(title: "Edit", style: .default) { _ in
-            self.openEditTaskViewController(from: self, task: task) { updatedTitle in
+            /*self.openEditTaskViewController(from: self, task: task) { updatedTitle in
                 self.presenter.updateTask(at: indexPath.row, with: updatedTitle)
-            }
+            }*/
+            self.showEditTaskViewController(for: task)
         }
         
         let shareAction = UIAlertAction(title: "Share", style: .default) { _ in
@@ -203,7 +219,7 @@ extension HomeView {
         present(activityController, animated: true)
     }
     
-    func openEditTaskViewController(from viewController: UIViewController, task: ToDoTask, onSave: @escaping (String) -> Void) {
+    /*func openEditTaskViewController(from viewController: UIViewController, task: ToDoTask, onSave: @escaping (String) -> Void) {
         let editTaskVC = EditTaskViewController()
         editTaskVC.task = task
         
@@ -212,6 +228,13 @@ extension HomeView {
         }
         
         viewController.navigationController?.pushViewController(editTaskVC, animated: true)
+    }*/
+    
+    func showEditTaskViewController(for task: ToDoTask) {
+        coordinator.openEditTaskScreen(onTaskSelected: { [weak self] updatedTask in
+            self?.presenter.updateTaskTitle(at: task.id, newTitle: updatedTask.todo)
+            self?.tableView.reloadData()
+        })
     }
 }
 

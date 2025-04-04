@@ -1,8 +1,25 @@
 import UIKit
 
+protocol AnyTodosSource {
+    
+}
+
+actor DependenciesContainer {
+    private var todosSource: AnyTodosSource?
+
+    func registerTodosSource(todosSource: AnyTodosSource?) {
+        self.todosSource = todosSource
+    }
+
+    func resolveTodos() -> AnyTodosSource? {
+        return todosSource
+    }
+}
+
 @main
 final class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
+    var coordinator: UIKitCoordinator!
     
     func application(
         _: UIApplication,
@@ -14,10 +31,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     
     private func setupWindow() {
         window = UIWindow(frame: UIScreen.main.bounds)
-        let homeVC = HomeView()
-        let navigationController = UINavigationController(rootViewController: homeVC)
-        window?.rootViewController = navigationController
-        window?.makeKeyAndVisible()
+        coordinator = UIKitCoordinator(window: window!)
+        coordinator.openHomeScreen()
     }
 }
 

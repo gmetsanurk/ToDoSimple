@@ -2,17 +2,12 @@ import UIKit
 import Combine
 import CoreDataManager
 
-protocol EditTaskScreenDelegate: AnyObject {
-    func onTaskSelected(Task: ToDoTask)
-}
-
-typealias EditTaskScreenHandler = (ToDoTask?) -> Void
+typealias EditTaskScreenHandler = (ToDoTask) -> Void?
 
 class EditTaskViewController: UIViewController, AnyTaskView {
     
-    var task: ToDoTask?
-    var onSave: ((String) -> Void)?
     var onTaskSelected: EditTaskScreenHandler?
+    var task: ToDoTask?
     private var keyboardWillShowNotificationCancellable: AnyCancellable?
     private var keyboardWillHideNotificationCancellable: AnyCancellable?
     private let taskTitleTextView = UITextView()
@@ -69,8 +64,7 @@ extension EditTaskViewController {
             print("Failed to save task: \(error)")
         }
         
-        onSave?(task.todo)
-        navigationController?.popViewController(animated: true)
+        onTaskSelected?(task)
     }
     
     func createKeyboard() {
@@ -167,10 +161,6 @@ extension EditTaskViewController: UITextViewDelegate {
         textView.attributedText = attributedText
     }
     
-}
-
-extension EditTaskViewController: EditTaskScreenDelegate {
-    func onTaskSelected(Task: ToDoTask) {}
 }
 
 extension EditTaskViewController: AnyScreen {
