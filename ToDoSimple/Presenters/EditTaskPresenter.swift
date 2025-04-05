@@ -1,1 +1,1 @@
-
+protocol AnyTaskView: AnyScreen, AnyObject {}
