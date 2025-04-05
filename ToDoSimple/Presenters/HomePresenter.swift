@@ -111,14 +111,14 @@ extension HomePresenter {
     }
     
     func handleSave(forOneTask task: ToDoTask) {
-        Task {
-            try await self.todosCoreDataManager.save(forOneTask: task)
+        Task { [weak self] in
+            try await self?.todosCoreDataManager.save(forOneTask: task)
         }
     }
     
     func handleDelete(forOneTask task: ToDoTask) {
-        Task {
-            try await self.todosCoreDataManager.delete(task: task)
+        Task { [weak self] in
+            try await self?.todosCoreDataManager.delete(task: task)
         }
     }
     
@@ -147,8 +147,8 @@ extension HomePresenter {
             todos[index].todo = newTitle
         }
         
-        Task {
-            await handleSave(forOneTask: todos[index])
+        Task { [weak self] in
+            await self?.handleSave(forOneTask: todos[index])
         }
     }
     
@@ -164,8 +164,8 @@ extension HomePresenter {
             todos.remove(at: index)
         }
         
-        Task {
-            await handleDelete(forOneTask: taskToDelete)
+        Task { [weak self] in
+            await self?.handleDelete(forOneTask: taskToDelete)
             DispatchQueue.main.async {
                 completion()
             }
@@ -185,8 +185,8 @@ extension HomePresenter {
         var task = isSearching ? filteredTasks[index] : todos[index]
         task.completed.toggle()
         
-        Task {
-            await handleSave(forOneTask: task)
+        Task { [weak self] in
+            await self?.handleSave(forOneTask: task)
             completion()
         }
     }
@@ -198,8 +198,8 @@ extension HomePresenter {
     
     func updateTask(at index: Int, with title: String) {
         todos[index].todo = title
-        Task {
-            await handleSave(forOneTask: todos[index])
+        Task { [weak self] in
+            await self?.handleSave(forOneTask: todos[index])
         }
     }
     
