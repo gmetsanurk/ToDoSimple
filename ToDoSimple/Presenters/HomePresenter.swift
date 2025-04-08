@@ -42,7 +42,8 @@ class HomePresenter {
 
 extension HomePresenter {
     
-    func handleOpenEditTask(onTaskSelected: ((ToDoTask?) -> Void)!) async {
+    func handleOpenEditTask(onTaskSelected: ((ToDoTask?) -> Void)?) async {
+        guard let onTaskSelected = onTaskSelected else { return }
         coordinator.openEditTaskScreen(onTaskSelected: { [weak self] updatedTask in
             self?.handleTaskSelected(updatedTask: updatedTask)
             print("Task selected, returning to Home Screen")
