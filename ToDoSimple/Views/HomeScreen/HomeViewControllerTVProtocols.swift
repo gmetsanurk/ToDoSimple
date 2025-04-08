@@ -14,6 +14,8 @@ extension HomeView : UITableViewDelegate, UITableViewDataSource {
         let task = presenter.getCurrentTasks()[indexPath.row]
         cell.configure(with: task)
         
+        cell.selectionStyle = .none
+        
         let action = UIAction { [weak self] _ in
             guard let self = self else {
                 return

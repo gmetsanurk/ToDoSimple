@@ -4,25 +4,35 @@ import CoreDataManager
 extension HomeView {
     
     func setupUI() {
-        view.addSubview(titleLabel)
-        view.addSubview(tableView)
-        view.addSubview(toolbar)
-        
+        setupTitleLabel()
         setupSearchBar()
         setupTableView()
         setupBottomToolbar()
         setupConstraints()
     }
     
+    func setupListOfTodos() {
+        Task { [weak self] in
+            await self?.presenter.chooseLocalOrRemoteTodos()
+        }
+    }
+    
+    private func setupTitleLabel() {
+        titleLabel.text = "To-Do List"
+        titleLabel.font = UIFont.systemFont(ofSize: 24, weight: .bold)
+        titleLabel.textAlignment = .center
+        view.addSubview(titleLabel)
+    }
+    
     private func setupTableView() {
         tableView.register(HomeTableViewCell.self, forCellReuseIdentifier: cellIdentifier)
         tableView.dataSource = self
         tableView.delegate = self
-        
         view.addSubview(tableView)
     }
     
     private func setupSearchBar() {
+        searchBar.placeholder = "Search Task"
         searchBar.delegate = self
         searchBar.sizeToFit()
         searchBar.showsCancelButton = false
@@ -43,15 +53,8 @@ extension HomeView {
         taskCountLabel.adjustsFontSizeToFitWidth = true
         taskCountLabel.minimumScaleFactor = 0.5
         
-        toolbar.setItems([flexibleSpace, taskCountItem, flexibleSpace, addTaskButton], animated: false)
-        
-        view.addSubview(toolbar)
-        NSLayoutConstraint.activate([
-            toolbar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            toolbar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            toolbar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            toolbar.heightAnchor.constraint(equalToConstant: 50)
-        ])
+        bottomToolbar.setItems([flexibleSpace, taskCountItem, flexibleSpace, addTaskButton], animated: false)
+        view.addSubview(bottomToolbar)
     }
     
     func addTask() {
@@ -144,6 +147,10 @@ extension HomeView {
     }
     
     private func setupConstraints() {
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        bottomToolbar.translatesAutoresizingMaskIntoConstraints = false
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -155,14 +162,14 @@ extension HomeView {
             tableView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: toolbar.topAnchor)
+            tableView.bottomAnchor.constraint(equalTo: bottomToolbar.topAnchor)
         ])
         
         NSLayoutConstraint.activate([
-            toolbar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            toolbar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            toolbar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            toolbar.heightAnchor.constraint(equalToConstant: 50)
+            bottomToolbar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            bottomToolbar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            bottomToolbar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            bottomToolbar.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
 }

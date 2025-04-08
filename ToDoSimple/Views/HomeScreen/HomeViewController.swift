@@ -7,16 +7,11 @@ struct Colors {
 
 class HomeView: UIViewController {
     
+    let cellIdentifier = "ToDoCell"
     let coordinator: Coordinator
     lazy var presenter: HomePresenter = {
         return HomePresenter(view: self, coordinator: coordinator)
     }()
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    let cellIdentifier = "ToDoCell"
     
     init(coordinator: Coordinator) {
         self.coordinator = coordinator
@@ -24,47 +19,22 @@ class HomeView: UIViewController {
         presenter = HomePresenter(view: self, coordinator: coordinator)
     }
     
-    let tableView: UITableView = {
-        let tableView = UITableView()
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        return tableView
-    }()
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
-    let titleLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "To-Do List"
-        label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
-        label.textAlignment = .center
-        return label
-    }()
-    
-    let toolbar: UIToolbar = {
-        let toolbar = UIToolbar()
-        toolbar.translatesAutoresizingMaskIntoConstraints = false
-        return toolbar
-    }()
-    
-    let searchBar: UISearchBar = {
-        let searchBar = UISearchBar()
-        searchBar.placeholder = "Search Task"
-        return searchBar
-    }()
-    
-    let taskCountLabel: UILabel = {
-        let uILabel = UILabel()
-        return uILabel
-    }()
+    let tableView = UITableView()
+    let titleLabel = UILabel()
+    let bottomToolbar = UIToolbar()
+    let searchBar = UISearchBar()
+    let taskCountLabel = UILabel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Colors.backgroundColor
         
         setupUI()
-        
-        Task { [weak self] in
-            await self?.presenter.chooseLocalOrRemoteTodos()
-        }
+        setupListOfTodos()
     }
 }
 
