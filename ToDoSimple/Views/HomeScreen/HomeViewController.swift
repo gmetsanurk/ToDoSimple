@@ -5,23 +5,45 @@ struct Colors {
     static let backgroundColor = UIColor.systemBackground
 }
 
-class HomeView: UITableViewController {
+class HomeView: UIViewController {
     
     private let coordinator: Coordinator
     private lazy var presenter: HomePresenter = {
         return HomePresenter(view: self, coordinator: coordinator)
     }()
     
-    init(coordinator: Coordinator) {
-        self.coordinator = coordinator
-        super.init(style: .plain)
-    }
-    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     let cellIdentifier = "ToDoCell"
+    
+    init(coordinator: Coordinator) {
+        self.coordinator = coordinator
+        super.init(nibName: nil, bundle: nil)
+        presenter = HomePresenter(view: self, coordinator: coordinator)
+    }
+    
+    private let tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        return tableView
+    }()
+    
+    private let titleLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "To-Do List"
+        label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
+        label.textAlignment = .center
+        return label
+    }()
+    
+    private let toolbar: UIToolbar = {
+        let toolbar = UIToolbar()
+        toolbar.translatesAutoresizingMaskIntoConstraints = false
+        return toolbar
+    }()
     
     private let searchBar: UISearchBar = {
         let searchBar = UISearchBar()
@@ -38,16 +60,65 @@ class HomeView: UITableViewController {
         super.viewDidLoad()
         view.backgroundColor = Colors.backgroundColor
         
-        tableView.register(HomeTableViewCell.self, forCellReuseIdentifier: cellIdentifier)
-        
-        navigationItem.title = "To-Do List"
-        
-        setupSearchBar()
-        setupBottomToolbar()
+        setupUI()
         
         Task { [weak self] in
             await self?.presenter.chooseLocalOrRemoteTodos()
         }
+    }
+}
+
+extension HomeView {
+    
+    private func setupUI() {
+        view.addSubview(titleLabel)
+        view.addSubview(tableView)
+        view.addSubview(toolbar)
+        
+        setupSearchBar()
+        setupTableView()
+        setupBottomToolbar()
+        setupConstraints()
+    }
+    
+    private func setupTableView() {
+        tableView.register(HomeTableViewCell.self, forCellReuseIdentifier: cellIdentifier)
+        tableView.dataSource = self
+        tableView.delegate = self
+        
+        view.addSubview(tableView)
+    }
+    
+    private func setupSearchBar() {
+        searchBar.delegate = self
+        searchBar.sizeToFit()
+        searchBar.showsCancelButton = false
+        tableView.tableHeaderView = searchBar
+    }
+    
+    private func setupBottomToolbar() {
+        let addTaskButton = UIBarButtonItem(systemItem: .compose, primaryAction: UIAction { [weak self] _ in
+            self?.addTask()
+        })
+        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        
+        updateTodosCountForTaskCountLabel()
+        taskCountLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        taskCountLabel.textAlignment = .center
+        let taskCountItem = UIBarButtonItem(customView: taskCountLabel)
+        
+        taskCountLabel.adjustsFontSizeToFitWidth = true
+        taskCountLabel.minimumScaleFactor = 0.5
+        
+        toolbar.setItems([flexibleSpace, taskCountItem, flexibleSpace, addTaskButton], animated: false)
+        
+        view.addSubview(toolbar)
+        NSLayoutConstraint.activate([
+            toolbar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            toolbar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            toolbar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            toolbar.heightAnchor.constraint(equalToConstant: 50)
+        ])
     }
     
     func addTask() {
@@ -76,85 +147,6 @@ class HomeView: UITableViewController {
             self.present(alert, animated: true)
         }
     }
-    
-    
-    
-    private func setupSearchBar() {
-        searchBar.delegate = self
-        searchBar.sizeToFit()
-        searchBar.showsCancelButton = false
-        tableView.tableHeaderView = searchBar
-    }
-    
-    private func setupBottomToolbar() {
-        let addTaskButton = UIBarButtonItem(systemItem: .compose, primaryAction: UIAction { [weak self] _ in
-            self?.addTask()
-        })
-        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-        
-        updateTodosCountForTaskCountLabel()
-        taskCountLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        taskCountLabel.textAlignment = .center
-        let taskCountItem = UIBarButtonItem(customView: taskCountLabel)
-        
-        taskCountLabel.adjustsFontSizeToFitWidth = true
-        taskCountLabel.minimumScaleFactor = 0.5
-        
-        setToolbarItems([flexibleSpace, taskCountItem, flexibleSpace, addTaskButton], animated: false)
-        navigationController?.isToolbarHidden = false
-    }
-    
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return presenter.getCurrentTasks().count
-    }
-    
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? HomeTableViewCell else {
-            return UITableViewCell()
-        }
-        
-        let task = presenter.getCurrentTasks()[indexPath.row]
-        cell.configure(with: task)
-        
-        let action = UIAction { [weak self] _ in
-            guard let self = self else {
-                return
-            }
-            
-            self.presenter.toggleTaskCompletion(at: indexPath.row)
-            let updatedTask = self.presenter.getCurrentTasks()[indexPath.row]
-            
-            cell.configure(with: updatedTask)
-            
-            Task {
-                do {
-                    self.presenter.handleSave(forOneTask: updatedTask)
-                    print("Task saved successfully (checkBox action)")
-                }
-            }
-        }
-        
-        cell.checkBox.addAction(action, for: .touchUpInside)
-        applyLongGestureRecognizer(for: cell)
-        return cell
-    }
-    
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            presenter.deleteTask(at: indexPath.row) {
-                tableView.deleteRows(at: [indexPath], with: .automatic)
-                self.updateTodosCountForTaskCountLabel()
-            }
-        }
-    }
-    
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let task = presenter.getCurrentTasks()[indexPath.row]
-        self.showEditTaskViewController(for: task)
-    }
-}
-
-extension HomeView {
     
     func updateTodosCountForTaskCountLabel() {
         taskCountLabel.text = "\(presenter.todosCount) tasks"
@@ -216,6 +208,81 @@ extension HomeView {
             self?.presenter.updateTaskTitle(at: task.id, newTitle: updatedTask.todo)
             self?.tableView.reloadData()
         })
+    }
+    
+    private func setupConstraints() {
+        NSLayoutConstraint.activate([
+            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            titleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            titleLabel.heightAnchor.constraint(equalToConstant: 50)
+        ])
+        
+        NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.bottomAnchor.constraint(equalTo: toolbar.topAnchor)
+        ])
+        
+        NSLayoutConstraint.activate([
+            toolbar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            toolbar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            toolbar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            toolbar.heightAnchor.constraint(equalToConstant: 50)
+        ])
+    }
+}
+
+extension HomeView : UITableViewDelegate, UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return presenter.getCurrentTasks().count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? HomeTableViewCell else {
+            return UITableViewCell()
+        }
+        
+        let task = presenter.getCurrentTasks()[indexPath.row]
+        cell.configure(with: task)
+        
+        let action = UIAction { [weak self] _ in
+            guard let self = self else {
+                return
+            }
+            
+            self.presenter.toggleTaskCompletion(at: indexPath.row)
+            let updatedTask = self.presenter.getCurrentTasks()[indexPath.row]
+            
+            cell.configure(with: updatedTask)
+            
+            Task {
+                do {
+                    self.presenter.handleSave(forOneTask: updatedTask)
+                    print("Task saved successfully (checkBox action)")
+                }
+            }
+        }
+        
+        cell.checkBox.addAction(action, for: .touchUpInside)
+        applyLongGestureRecognizer(for: cell)
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            presenter.deleteTask(at: indexPath.row) {
+                tableView.deleteRows(at: [indexPath], with: .automatic)
+                self.updateTodosCountForTaskCountLabel()
+            }
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let task = presenter.getCurrentTasks()[indexPath.row]
+        self.showEditTaskViewController(for: task)
     }
 }
 
