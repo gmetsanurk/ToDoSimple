@@ -12,32 +12,43 @@ class EditTaskViewController: UIViewController, AnyTaskView {
     private var keyboardWillHideNotificationCancellable: AnyCancellable?
     private let taskTitleTextView = UITextView()
     
+    var leftBarButtonItemAction: (() -> Void)?
+    
+    var backButton: UIButton!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Colors.backgroundColor
         configureTask()
-        createLeftBarButtonItem()
         handleTaskTitleTextView()
+        createBackButton()
         createKeyboard()
-        setupViews()
+        view.addSubview(backButton)
+        view.addSubview(taskTitleTextView)
+        setupButtonConstraints()
+        setupConstraints()
+        
+        print("Back button frame: \(backButton.frame)")
     }
     
 }
 
 extension EditTaskViewController {
     
-    private func createLeftBarButtonItem() {
-        navigationItem.leftBarButtonItem = UIBarButtonItem(
-            title: "Back",
+    private func createBackButton() {
+        backButton = UIButton(
+            type: .system,
             primaryAction: UIAction { [weak self] _ in
                 guard let self = self else {
                     return
                 }
                 Task { [weak self] in
-                    await self?.handleBackAction()
+                    await self?.handleBackAction(completion: {
+                        self?.dismiss(animated: true, completion: nil)
+                    })
                 }
-            }
-        )
+            })
+        backButton.setTitle("Back", for: .normal)
     }
     
     private func configureTask() {
@@ -48,8 +59,9 @@ extension EditTaskViewController {
         taskTitleTextView.attributedText = attributedText
     }
     
-    private func handleBackAction() async {
+    func handleBackAction(completion: @escaping () -> Void) async  {
         guard var task = task else {
+            completion()
             return
         }
         
@@ -64,7 +76,8 @@ extension EditTaskViewController {
             print("Failed to save task: \(error)")
         }
         
-        onTaskSelected?(task)
+        //onTaskSelected?(task)
+        completion()
     }
     
     func createKeyboard() {
@@ -101,26 +114,36 @@ extension EditTaskViewController {
         taskTitleTextView.resignFirstResponder()
     }
     
-    func setupViews() {
-        view.addSubview(taskTitleTextView)
+    func setupButtonConstraints() {
+        backButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            taskTitleTextView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            taskTitleTextView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            
-            taskTitleTextView.heightAnchor.constraint(equalTo: view.heightAnchor),
-            taskTitleTextView.widthAnchor.constraint(equalTo: view.widthAnchor)
+            backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
+            backButton.widthAnchor.constraint(equalToConstant: 100),
+            backButton.heightAnchor.constraint(equalToConstant: 44)
         ])
-        
     }
-
+    
+    func setupConstraints() {
+        //backButton.translatesAutoresizingMaskIntoConstraints = false
+        taskTitleTextView.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            
+            
+            taskTitleTextView.topAnchor.constraint(equalTo: backButton.bottomAnchor, constant: 20),
+            taskTitleTextView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            taskTitleTextView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            taskTitleTextView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -16)
+        ])
+    }
 }
 
 extension EditTaskViewController: UITextViewDelegate {
     
     private func handleTaskTitleTextView() {
         let textView = taskTitleTextView
-        textView.translatesAutoresizingMaskIntoConstraints = false
         textView.layer.borderWidth = 1
         textView.layer.cornerRadius = 8
         textView.font = UIFont.systemFont(ofSize: 18)
@@ -164,5 +187,9 @@ extension EditTaskViewController: UITextViewDelegate {
 }
 
 extension EditTaskViewController: AnyScreen {
-    func present(screen: any AnyScreen) {}
+    func present(screen: any AnyScreen) {
+        if let screenController = screen as? (UIViewController & AnyScreen) {
+            self.presentController(screen: screenController)
+        }
+    }
 }
