@@ -12,6 +12,10 @@ class EditTaskViewController: UIViewController, AnyTaskView {
     private var keyboardWillHideNotificationCancellable: AnyCancellable?
     private let taskTitleTextView = UITextView()
     
+    var leftBarButtonItemAction: (() -> Void)?
+    
+    var backButton = UIButton()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Colors.backgroundColor
@@ -19,7 +23,9 @@ class EditTaskViewController: UIViewController, AnyTaskView {
         createLeftBarButtonItem()
         handleTaskTitleTextView()
         createKeyboard()
-        setupViews()
+        setupConstraints()
+        
+        view.addSubview(taskTitleTextView)
     }
     
 }
@@ -27,8 +33,8 @@ class EditTaskViewController: UIViewController, AnyTaskView {
 extension EditTaskViewController {
     
     private func createLeftBarButtonItem() {
-        navigationItem.leftBarButtonItem = UIBarButtonItem(
-            title: "Back",
+        backButton = UIButton(
+            type: .system,
             primaryAction: UIAction { [weak self] _ in
                 guard let self = self else {
                     return
@@ -36,8 +42,9 @@ extension EditTaskViewController {
                 Task { [weak self] in
                     await self?.handleBackAction()
                 }
-            }
-        )
+            })
+
+        view.addSubview(backButton)
     }
     
     private func configureTask() {
@@ -101,17 +108,21 @@ extension EditTaskViewController {
         taskTitleTextView.resignFirstResponder()
     }
     
-    func setupViews() {
-        view.addSubview(taskTitleTextView)
+    func setupConstraints() {
+        backButton.translatesAutoresizingMaskIntoConstraints = false
+        taskTitleTextView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            taskTitleTextView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            taskTitleTextView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
+            backButton.widthAnchor.constraint(equalToConstant: 60),
+            backButton.heightAnchor.constraint(equalToConstant: 30),
             
-            taskTitleTextView.heightAnchor.constraint(equalTo: view.heightAnchor),
-            taskTitleTextView.widthAnchor.constraint(equalTo: view.widthAnchor)
+            taskTitleTextView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
+            taskTitleTextView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            taskTitleTextView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            taskTitleTextView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -16)
         ])
-        
     }
 
 }
