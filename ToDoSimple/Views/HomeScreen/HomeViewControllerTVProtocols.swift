@@ -12,29 +12,11 @@ extension HomeView : UITableViewDelegate, UITableViewDataSource {
         }
         
         let task = presenter.getCurrentTasks()[indexPath.row]
-        cell.configure(with: task)
+        cell.configure(with: task, delegate: self, indexPath: indexPath)
         
         cell.selectionStyle = .none
         
-        let action = UIAction { [weak self] _ in
-            guard let self = self else {
-                return
-            }
-            
-            self.presenter.toggleTaskCompletion(at: indexPath.row)
-            let updatedTask = self.presenter.getCurrentTasks()[indexPath.row]
-            
-            cell.configure(with: updatedTask)
-            
-            Task {
-                do {
-                    self.presenter.handleSave(forOneTask: updatedTask)
-                    print("Task saved successfully (checkBox action)")
-                }
-            }
-        }
-        
-        cell.checkBox.addAction(action, for: .touchUpInside)
+        // cell.checkBox.addAction(action, for: .primaryActionTriggered)
         applyLongGestureRecognizer(for: cell)
         return cell
     }

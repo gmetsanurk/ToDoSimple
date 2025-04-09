@@ -14,7 +14,7 @@ class EditTaskViewController: UIViewController, AnyTaskView {
     
     var leftBarButtonItemAction: (() -> Void)?
     
-    var backButton: UIButton!
+    unowned var backButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,12 +23,13 @@ class EditTaskViewController: UIViewController, AnyTaskView {
         handleTaskTitleTextView()
         createBackButton()
         createKeyboard()
-        view.addSubview(backButton)
         view.addSubview(taskTitleTextView)
         setupButtonConstraints()
         setupConstraints()
         
-        print("Back button frame: \(backButton.frame)")
+        Task {
+            await logger.log("Back button frame: \(backButton.frame)")
+        }
     }
     
 }
@@ -36,19 +37,23 @@ class EditTaskViewController: UIViewController, AnyTaskView {
 extension EditTaskViewController {
     
     private func createBackButton() {
-        backButton = UIButton(
-            type: .system,
-            primaryAction: UIAction { [weak self] _ in
-                guard let self = self else {
-                    return
-                }
-                Task { [weak self] in
-                    await self?.handleBackAction(completion: {
+        backButton = {
+            let result = UIButton(
+                type: .system,
+                primaryAction: UIAction { [weak self] _ in
+                    guard let self = self else {
+                        return
+                    }
+                    Task { [weak self] in
+                        await self?.handleBackAction()
                         self?.dismiss(animated: true, completion: nil)
-                    })
+                    }
                 }
-            })
-        backButton.setTitle("Back", for: .normal)
+            )
+            result.setTitle("Back", for: .normal)
+            view.addSubview(result)
+            return result
+        }()
     }
     
     private func configureTask() {
@@ -59,9 +64,8 @@ extension EditTaskViewController {
         taskTitleTextView.attributedText = attributedText
     }
     
-    func handleBackAction(completion: @escaping () -> Void) async  {
+    func handleBackAction() async  {
         guard var task = task else {
-            completion()
             return
         }
         
@@ -71,13 +75,12 @@ extension EditTaskViewController {
         
         do {
             try await CoreDataManager.shared.save(forOneTask: task)
-            print("Task saved successfully (from handleBack action)")
+            await logger.log("Task saved successfully (from handleBack action)")
         } catch {
-            print("Failed to save task: \(error)")
+            await logger.log("Failed to save task: \(error)")
         }
         
         //onTaskSelected?(task)
-        completion()
     }
     
     func createKeyboard() {
@@ -179,7 +182,7 @@ extension EditTaskViewController: UITextViewDelegate {
     
     func textViewDidChange(_ textView: UITextView) {
         guard let text = textView.text else { return }
-        
+                
         let attributedText = applyCustomTextStyle(for: text)
         textView.attributedText = attributedText
     }

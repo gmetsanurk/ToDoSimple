@@ -1,11 +1,24 @@
 import UIKit
 import CoreDataManager
 
+actor EventsLogger {
+    func log(_ message: @autoclosure () -> String) {
+        #if LOGS_ENABLED
+        print(message())
+        #endif
+    }
+}
+let logger = EventsLogger()
+
 struct Colors {
     static let backgroundColor = UIColor.systemBackground
 }
 
-class HomeView: UIViewController {
+protocol HomeViewCellsHandler: AnyObject {
+    func onCellTapped(cell: HomeTableViewCell, indexPath: IndexPath)
+}
+
+class HomeView: UIViewController, HomeViewCellsHandler {
     
     let cellIdentifier = "ToDoCell"
     let coordinator: Coordinator
@@ -35,6 +48,20 @@ class HomeView: UIViewController {
         
         setupUI()
         setupListOfTodos()
+    }
+    
+    func onCellTapped(cell: HomeTableViewCell, indexPath: IndexPath) {
+        self.presenter.toggleTaskCompletion(at: indexPath.row)
+        let updatedTask = self.presenter.getCurrentTasks()[indexPath.row]
+        
+        cell.configure(with: updatedTask, delegate: self, indexPath: indexPath)
+        
+        Task {
+            do {
+                self.presenter.handleSave(forOneTask: updatedTask)
+                await logger.log("Task saved successfully (checkBox action)")
+            }
+        }
     }
 }
 
