@@ -17,7 +17,16 @@ struct UIKitCoordinator: Coordinator {
 
     func openHomeScreen() {
         if let someScreen = window.rootViewController, let presentedViewController = someScreen.presentedViewController as? EditTaskViewController {
-            presentedViewController.dismiss(animated: true)
+            Task {
+                do {
+                    await presentedViewController.handleBackAction(completion: {
+                        presentedViewController.dismiss(animated: true) {
+                            self.window.rootViewController = HomeViewScreen(coordinator: self)
+                            self.window.makeKeyAndVisible()
+                        }
+                    })
+                }
+            }
         } else {
             window.rootViewController = HomeViewScreen(coordinator: self)
             window.makeKeyAndVisible()

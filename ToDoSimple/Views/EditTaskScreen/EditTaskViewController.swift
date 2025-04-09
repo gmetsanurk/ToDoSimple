@@ -43,7 +43,9 @@ extension EditTaskViewController {
                     return
                 }
                 Task { [weak self] in
-                    await self?.handleBackAction()
+                    await self?.handleBackAction(completion: {
+                        self?.dismiss(animated: true, completion: nil)
+                    })
                 }
             })
         backButton.setTitle("Back", for: .normal)
@@ -57,8 +59,9 @@ extension EditTaskViewController {
         taskTitleTextView.attributedText = attributedText
     }
     
-    private func handleBackAction() async {
+    func handleBackAction(completion: @escaping () -> Void) async  {
         guard var task = task else {
+            completion()
             return
         }
         
@@ -73,7 +76,8 @@ extension EditTaskViewController {
             print("Failed to save task: \(error)")
         }
         
-        onTaskSelected?(task)
+        //onTaskSelected?(task)
+        completion()
     }
     
     func createKeyboard() {
