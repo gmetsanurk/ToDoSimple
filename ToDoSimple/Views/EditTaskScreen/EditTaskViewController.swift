@@ -14,25 +14,28 @@ class EditTaskViewController: UIViewController, AnyTaskView {
     
     var leftBarButtonItemAction: (() -> Void)?
     
-    var backButton = UIButton()
+    var backButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Colors.backgroundColor
         configureTask()
-        createLeftBarButtonItem()
         handleTaskTitleTextView()
+        createBackButton()
         createKeyboard()
+        view.addSubview(backButton)
+        view.addSubview(taskTitleTextView)
+        setupButtonConstraints()
         setupConstraints()
         
-        view.addSubview(taskTitleTextView)
+        print("Back button frame: \(backButton.frame)")
     }
     
 }
 
 extension EditTaskViewController {
     
-    private func createLeftBarButtonItem() {
+    private func createBackButton() {
         backButton = UIButton(
             type: .system,
             primaryAction: UIAction { [weak self] _ in
@@ -43,8 +46,7 @@ extension EditTaskViewController {
                     await self?.handleBackAction()
                 }
             })
-
-        view.addSubview(backButton)
+        backButton.setTitle("Back", for: .normal)
     }
     
     private func configureTask() {
@@ -108,30 +110,36 @@ extension EditTaskViewController {
         taskTitleTextView.resignFirstResponder()
     }
     
-    func setupConstraints() {
+    func setupButtonConstraints() {
         backButton.translatesAutoresizingMaskIntoConstraints = false
-        taskTitleTextView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
-            backButton.widthAnchor.constraint(equalToConstant: 60),
-            backButton.heightAnchor.constraint(equalToConstant: 30),
+            backButton.widthAnchor.constraint(equalToConstant: 100),
+            backButton.heightAnchor.constraint(equalToConstant: 44)
+        ])
+    }
+    
+    func setupConstraints() {
+        //backButton.translatesAutoresizingMaskIntoConstraints = false
+        taskTitleTextView.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
             
-            taskTitleTextView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
+            
+            taskTitleTextView.topAnchor.constraint(equalTo: backButton.bottomAnchor, constant: 20),
             taskTitleTextView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             taskTitleTextView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             taskTitleTextView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -16)
         ])
     }
-
 }
 
 extension EditTaskViewController: UITextViewDelegate {
     
     private func handleTaskTitleTextView() {
         let textView = taskTitleTextView
-        textView.translatesAutoresizingMaskIntoConstraints = false
         textView.layer.borderWidth = 1
         textView.layer.cornerRadius = 8
         textView.font = UIFont.systemFont(ofSize: 18)
@@ -175,5 +183,9 @@ extension EditTaskViewController: UITextViewDelegate {
 }
 
 extension EditTaskViewController: AnyScreen {
-    func present(screen: any AnyScreen) {}
+    func present(screen: any AnyScreen) {
+        if let screenController = screen as? (UIViewController & AnyScreen) {
+            self.presentController(screen: screenController)
+        }
+    }
 }
