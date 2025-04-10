@@ -10,8 +10,9 @@ class EditTaskViewController: UIViewController, AnyTaskView {
     var task: ToDoTask?
     private var keyboardWillShowNotificationCancellable: AnyCancellable?
     private var keyboardWillHideNotificationCancellable: AnyCancellable?
-    private let taskTitleTextView = UITextView()
+    let taskTitleTextView = UITextView()
     
+    private var presenter: EditTaskPresenter?
     var leftBarButtonItemAction: (() -> Void)?
     
     unowned var backButton: UIButton!
@@ -19,16 +20,20 @@ class EditTaskViewController: UIViewController, AnyTaskView {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Colors.backgroundColor
-        configureTask()
-        handleTaskTitleTextView()
         createBackButton()
         createKeyboard()
+        setupTaskTitleTextView()
         view.addSubview(taskTitleTextView)
+        view.addSubview(backButton)
         setupButtonConstraints()
         setupConstraints()
         
-        Task {
-            await logger.log("Back button frame: \(backButton.frame)")
+        presenter = EditTaskPresenter(view: self, onTaskSelected: { updatedTask in
+            print("Updated Task: \(updatedTask)")
+        })
+        
+        if let task = task {
+            presenter?.configure(with: task)
         }
     }
     
@@ -56,7 +61,7 @@ extension EditTaskViewController {
         }()
     }
     
-    private func configureTask() {
+    func configureTask(with task: ToDoTask?) {
         guard let task = task else {
             return
         }
@@ -145,7 +150,7 @@ extension EditTaskViewController {
 
 extension EditTaskViewController: UITextViewDelegate {
     
-    private func handleTaskTitleTextView() {
+    private func setupTaskTitleTextView() {
         let textView = taskTitleTextView
         textView.layer.borderWidth = 1
         textView.layer.cornerRadius = 8
