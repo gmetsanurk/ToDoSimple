@@ -25,7 +25,6 @@ class EditTaskViewController: UIViewController, AnyTaskView {
         setupTaskTitleTextView()
         view.addSubview(taskTitleTextView)
         view.addSubview(backButton)
-        setupButtonConstraints()
         setupConstraints()
         
         presenter = EditTaskPresenter(view: self, onTaskSelected: { updatedTask in
@@ -85,7 +84,7 @@ extension EditTaskViewController {
             await logger.log("Failed to save task: \(error)")
         }
         
-        //onTaskSelected?(task)
+        onTaskSelected?(task)
     }
     
     func createKeyboard() {
@@ -122,23 +121,15 @@ extension EditTaskViewController {
         taskTitleTextView.resignFirstResponder()
     }
     
-    func setupButtonConstraints() {
+    func setupConstraints() {
         backButton.translatesAutoresizingMaskIntoConstraints = false
+        taskTitleTextView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
             backButton.widthAnchor.constraint(equalToConstant: 100),
-            backButton.heightAnchor.constraint(equalToConstant: 44)
-        ])
-    }
-    
-    func setupConstraints() {
-        //backButton.translatesAutoresizingMaskIntoConstraints = false
-        taskTitleTextView.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            
+            backButton.heightAnchor.constraint(equalToConstant: 44),
             
             taskTitleTextView.topAnchor.constraint(equalTo: backButton.bottomAnchor, constant: 20),
             taskTitleTextView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
