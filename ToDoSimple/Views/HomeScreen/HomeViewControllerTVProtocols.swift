@@ -30,12 +30,20 @@ extension HomeView : UITableViewDelegate, UITableViewDataSource {
         }
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    /*func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let task = presenter.getCurrentTasks()[indexPath.row]
         
         coordinator.openEditTaskScreen(with: task, onTaskSelected: { [weak self] updatedTask in
             self?.presenter.updateTaskTitle(at: task.id, newTitle: updatedTask.todo)
             self?.tableView.reloadData()
         })
-    }
-}
+    }*/
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let task = presenter.getCurrentTasks()[indexPath.row]
+        presenter.handleOpenEditTask(onTaskSelected: { [weak self] updatedTask in
+            if let updatedTitle = updatedTask?.todo {
+                self?.presenter.updateTaskTitle(at: task.id, newTitle: updatedTitle)
+                self?.tableView.reloadData()
+            }
+        })
+    }}

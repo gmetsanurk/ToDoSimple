@@ -37,8 +37,9 @@ struct UIKitCoordinator: Coordinator {
     
     func openEditTaskScreen(with task: ToDoTask, onTaskSelected: @escaping EditTaskScreenHandler) {
         let editTaskScreen = EditTaskScreen()
-        editTaskScreen.onTaskSelected = onTaskSelected
+        let presenter = EditTaskPresenter(view: editTaskScreen, onTaskSelected: onTaskSelected)
         editTaskScreen.presenter?.configure(with: task)
+        editTaskScreen.presenter = presenter
         
         if let homeView = window.rootViewController as? AnyHomeView {
             homeView.present(screen: editTaskScreen)

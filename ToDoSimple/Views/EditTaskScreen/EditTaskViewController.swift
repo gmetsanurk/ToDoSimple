@@ -32,6 +32,7 @@ class EditTaskViewController: UIViewController, AnyTaskView {
         
         if let task = presenter?.currentTask {
             presenter?.configure(with: task)
+            logger.log(task.todo)
         }
     }
     

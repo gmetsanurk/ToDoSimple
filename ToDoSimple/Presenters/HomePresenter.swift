@@ -42,19 +42,18 @@ class HomePresenter {
 
 extension HomePresenter {
     
-    func handleOpenEditTask(onTaskSelected: ((ToDoTask?) -> Void)?) async {
-        guard let onTaskSelected = onTaskSelected else { return }
-        
-        if let taskToEdit = self.todos.first(where: { $0.completed == false }) { 
-            coordinator.openEditTaskScreen(with: taskToEdit, onTaskSelected: { [weak self] updatedTask in
-                self?.handleTaskSelected(updatedTask: updatedTask)
-                Task {
-                    await logger.log("Task selected, returning to Home Screen")
-                }
-                self?.coordinator.openHomeScreen()
-            })
+    func handleOpenEditTask(onTaskSelected: ((ToDoTask?) -> Void)?){
+            guard let onTaskSelected = onTaskSelected else { return }
+            if let taskToEdit = self.todos.first(where: { !$0.completed }) {
+                coordinator.openEditTaskScreen(with: taskToEdit, onTaskSelected: { [weak self] updatedTask in
+                    self?.handleTaskSelected(updatedTask: updatedTask)
+                    Task {
+                        await logger.log("Task selected, returning to Home Screen")
+                    }
+                    self?.coordinator.openHomeScreen()
+                })
+            }
         }
-    }
     
     func handleTaskSelected(updatedTask: ToDoTask) {
         updateTaskTitle(at: updatedTask.id, newTitle: updatedTask.todo)
