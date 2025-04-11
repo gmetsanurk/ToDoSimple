@@ -3,9 +3,13 @@ import CoreDataManager
 
 protocol AnyTaskView: AnyScreen, AnyObject {}
 
+protocol EditTaskView: AnyObject {
+    func configureTask(with task: ToDoTask?)
+}
+
 class EditTaskPresenter {
     
-    private var task: ToDoTask?
+    var currentTask: ToDoTask?
     private var view: EditTaskViewController
     private var onTaskSelected: EditTaskScreenHandler
     
@@ -15,23 +19,27 @@ class EditTaskPresenter {
     }
     
     func configure(with task: ToDoTask) {
-        self.task = task
+        self.currentTask = task
         view.configureTask(with: task)
     }
     
+    func updateTask(with text: String) {
+        guard var currentTask = currentTask else { return }
+        currentTask.todo = text
+        self.currentTask = currentTask
+    }
+    
     func handleBackAction(completion: @escaping () -> Void) async {
-        guard var task = task else { return }
-        if let updatedTitle = await view.taskTitleTextView.text, !updatedTitle.isEmpty {
-            task.todo = updatedTitle
-        }
+        guard let currentTask = currentTask else { return }
         
         do {
-            try await CoreDataManager.shared.save(forOneTask: task)
-            print("Task saved successfully")
+            try await CoreDataManager.shared.save(forOneTask: currentTask)
+            await logger.log("Task saved successfully (handleBack action")
         } catch {
-            print("Failed to save task: \(error)")
+            await logger.log("Failed to save task: \(error)")
         }
-
-        onTaskSelected(task)
+        
+        onTaskSelected(currentTask)
+        completion()
     }
 }

@@ -1,8 +1,9 @@
 import UIKit
+import CoreDataManager
 
 protocol Coordinator {
     func openHomeScreen()
-    func openEditTaskScreen(onTaskSelected: @escaping EditTaskScreenHandler)
+    func openEditTaskScreen(with task: ToDoTask, onTaskSelected: @escaping EditTaskScreenHandler)
     func openAlert(onAdd: @escaping (String?) -> Void)
 }
 
@@ -10,6 +11,7 @@ private typealias HomeViewScreen = HomeView
 private typealias EditTaskScreen = EditTaskViewController
 
 struct UIKitCoordinator: Coordinator {
+    
     unowned var window: UIWindow
     
     init(window: UIWindow) {
@@ -33,8 +35,11 @@ struct UIKitCoordinator: Coordinator {
         }
     }
     
-    func openEditTaskScreen(onTaskSelected: @escaping EditTaskScreenHandler) {
+    func openEditTaskScreen(with task: ToDoTask, onTaskSelected: @escaping EditTaskScreenHandler) {
         let editTaskScreen = EditTaskScreen()
+        editTaskScreen.onTaskSelected = onTaskSelected
+        editTaskScreen.presenter?.configure(with: task)
+        
         if let homeView = window.rootViewController as? AnyHomeView {
             homeView.present(screen: editTaskScreen)
         } else if window.rootViewController == nil {

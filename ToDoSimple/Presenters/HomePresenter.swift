@@ -44,13 +44,16 @@ extension HomePresenter {
     
     func handleOpenEditTask(onTaskSelected: ((ToDoTask?) -> Void)?) async {
         guard let onTaskSelected = onTaskSelected else { return }
-        coordinator.openEditTaskScreen(onTaskSelected: { [weak self] updatedTask in
-            self?.handleTaskSelected(updatedTask: updatedTask)
-            Task {
-                await logger.log("Task selected, returning to Home Screen")
-            }
-            self?.coordinator.openHomeScreen()
-        })
+        
+        if let taskToEdit = self.todos.first(where: { $0.completed == false }) { 
+            coordinator.openEditTaskScreen(with: taskToEdit, onTaskSelected: { [weak self] updatedTask in
+                self?.handleTaskSelected(updatedTask: updatedTask)
+                Task {
+                    await logger.log("Task selected, returning to Home Screen")
+                }
+                self?.coordinator.openHomeScreen()
+            })
+        }
     }
     
     func handleTaskSelected(updatedTask: ToDoTask) {

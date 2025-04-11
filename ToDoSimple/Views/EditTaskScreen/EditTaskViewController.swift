@@ -7,12 +7,11 @@ typealias EditTaskScreenHandler = (ToDoTask) -> Void?
 class EditTaskViewController: UIViewController, AnyTaskView {
     
     var onTaskSelected: EditTaskScreenHandler?
-    var task: ToDoTask?
     private var keyboardWillShowNotificationCancellable: AnyCancellable?
     private var keyboardWillHideNotificationCancellable: AnyCancellable?
     let taskTitleTextView = UITextView()
     
-    private var presenter: EditTaskPresenter?
+    var presenter: EditTaskPresenter?
     var leftBarButtonItemAction: (() -> Void)?
     
     unowned var backButton: UIButton!
@@ -28,10 +27,10 @@ class EditTaskViewController: UIViewController, AnyTaskView {
         setupConstraints()
         
         presenter = EditTaskPresenter(view: self, onTaskSelected: { updatedTask in
-            print("Updated Task: \(updatedTask)")
+            self.onTaskSelected?(updatedTask)
         })
         
-        if let task = task {
+        if let task = presenter?.currentTask {
             presenter?.configure(with: task)
         }
     }
@@ -66,25 +65,13 @@ extension EditTaskViewController {
         }
         let attributedText = applyCustomTextStyle(for: task.todo)
         taskTitleTextView.attributedText = attributedText
+        presenter?.updateTask(with: task.todo)
     }
     
-    func handleBackAction() async  {
-        guard var task = task else {
-            return
+    func handleBackAction() async {
+        await presenter?.handleBackAction() {
+            self.dismiss(animated: true, completion: nil)
         }
-        
-        if let updatedTitle = taskTitleTextView.text, !updatedTitle.isEmpty {
-            task.todo = updatedTitle
-        }
-        
-        do {
-            try await CoreDataManager.shared.save(forOneTask: task)
-            await logger.log("Task saved successfully (from handleBack action)")
-        } catch {
-            await logger.log("Failed to save task: \(error)")
-        }
-        
-        onTaskSelected?(task)
     }
     
     func createKeyboard() {
@@ -141,6 +128,12 @@ extension EditTaskViewController {
 
 extension EditTaskViewController: UITextViewDelegate {
     
+    func textViewDidChange(_ textView: UITextView) {
+        guard let text = textView.text else { return }
+        
+        presenter?.updateTask(with: text)
+    }
+    
     private func setupTaskTitleTextView() {
         let textView = taskTitleTextView
         textView.layer.borderWidth = 1
@@ -176,12 +169,12 @@ extension EditTaskViewController: UITextViewDelegate {
         return attributedString
     }
     
-    func textViewDidChange(_ textView: UITextView) {
+    /*func textViewDidChange(_ textView: UITextView) {
         guard let text = textView.text else { return }
                 
         let attributedText = applyCustomTextStyle(for: text)
         textView.attributedText = attributedText
-    }
+    }*/
     
 }
 
