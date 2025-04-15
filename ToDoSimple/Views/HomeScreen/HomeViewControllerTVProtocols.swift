@@ -25,7 +25,9 @@ extension HomeView : UITableViewDelegate, UITableViewDataSource {
         if editingStyle == .delete {
             presenter.deleteTask(at: indexPath.row) {
                 tableView.deleteRows(at: [indexPath], with: .automatic)
-                self.updateTodosCountForTaskCountLabel()
+                DispatchQueue.main.async {
+                    self.updateTodosCountForTaskCountLabel()
+                }
             }
         }
     }

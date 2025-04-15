@@ -46,9 +46,6 @@ extension HomePresenter {
         let taskToEdit = self.todos[index]
         coordinator.openEditTaskScreen(with: taskToEdit, onTaskSelected: { [weak self] updatedTask in
             self?.handleTaskSelected(updatedTask: updatedTask)
-            Task {
-                await logger.log("Task selected, returning to Home Screen")
-            }
             self?.coordinator.openHomeScreen()
         })
     }
