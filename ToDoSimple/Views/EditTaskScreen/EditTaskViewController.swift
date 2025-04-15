@@ -30,6 +30,11 @@ class EditTaskViewController: UIViewController, AnyTaskView {
         
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        taskTitleTextView.becomeFirstResponder()
+    }
+    
 }
 
 extension EditTaskViewController {
@@ -129,8 +134,8 @@ extension EditTaskViewController: UITextViewDelegate {
     
     private func setupTaskTitleTextView() {
         let textView = taskTitleTextView
-        textView.layer.borderWidth = 1
-        textView.layer.cornerRadius = 8
+        //textView.layer.borderWidth = 1
+        //textView.layer.cornerRadius = 8
         textView.font = UIFont.systemFont(ofSize: 18)
         textView.textContainerInset = UIEdgeInsets(top: 10, left: 5, bottom: 10, right: 5)
         textView.delegate = self
