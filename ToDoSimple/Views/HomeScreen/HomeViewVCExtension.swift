@@ -24,20 +24,13 @@ extension HomeView {
         view.addSubview(titleLabel)
     }
     
-    /*private func setupSearchBar() {
+    private func setupSearchBar() {
         searchBar.placeholder = "Search Task"
         searchBar.delegate = self
         searchBar.sizeToFit()
         searchBar.showsCancelButton = false
-        tableView.tableHeaderView = searchBar
-    }*/
-    private func setupSearchBar() {
-            searchBar.placeholder = "Search Task"
-            searchBar.delegate = self
-            searchBar.sizeToFit()
-            searchBar.showsCancelButton = false
-            view.addSubview(searchBar)
-        }
+        view.addSubview(searchBar)
+    }
     
     private func setupTableView() {
         tableView.register(HomeTableViewCell.self, forCellReuseIdentifier: cellIdentifier)
@@ -84,7 +77,9 @@ extension HomeView {
     }
     
     func updateTodosCountForTaskCountLabel() {
-        taskCountLabel.text = "\(presenter.todosCount) tasks"
+        DispatchQueue.main.async {
+            self.taskCountLabel.text = "\(self.presenter.todosCount) tasks"
+        }
     }
     
     func applyLongGestureRecognizer(for cell: UITableViewCell) {
