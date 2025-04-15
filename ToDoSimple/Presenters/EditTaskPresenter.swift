@@ -34,9 +34,8 @@ class EditTaskPresenter {
         
         Task {
             await handleCoreDataSave(for: currentTask)
+            self.onTaskSelected(currentTask)
         }
-        
-        onTaskSelected(currentTask)
     }
     
     func handleCoreDataSave(for currentTask: ToDoTask) async {

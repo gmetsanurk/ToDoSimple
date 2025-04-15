@@ -42,7 +42,7 @@ class HomePresenter {
 
 extension HomePresenter {
     
-    func handleOpenEditTask(onTaskSelected: ((ToDoTask?) -> Void)?){
+    func handleOpenEditTask(onTaskSelected: ((ToDoTask?) -> Void)?) {
         guard let onTaskSelected = onTaskSelected else { return }
         if let taskToEdit = self.todos.first {
             coordinator.openEditTaskScreen(with: taskToEdit, onTaskSelected: { [weak self] updatedTask in

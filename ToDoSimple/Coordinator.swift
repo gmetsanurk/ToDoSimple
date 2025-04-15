@@ -19,19 +19,18 @@ struct UIKitCoordinator: Coordinator {
     }
     
     func openHomeScreen() {
-        if let someScreen = window.rootViewController, let presentedViewController = someScreen.presentedViewController as? EditTaskViewController {
-            Task {
-                do {
-                    await presentedViewController.handleBackAction()
+        DispatchQueue.main.async {
+            if let someScreen = self.window.rootViewController, let presentedViewController = someScreen.presentedViewController as? EditTaskViewController {
+                Task {
                     presentedViewController.dismiss(animated: true) {
                         self.window.rootViewController = HomeViewScreen(coordinator: self)
                         self.window.makeKeyAndVisible()
                     }
                 }
+            } else {
+                self.window.rootViewController = HomeViewScreen(coordinator: self)
+                self.window.makeKeyAndVisible()
             }
-        } else {
-            window.rootViewController = HomeViewScreen(coordinator: self)
-            window.makeKeyAndVisible()
         }
     }
     
@@ -46,6 +45,7 @@ struct UIKitCoordinator: Coordinator {
             window.rootViewController = HomeViewScreen(coordinator: self)
             window.makeKeyAndVisible()
             (window.rootViewController as? AnyScreen)?.present(screen: editTaskScreen)
+            editTaskScreen.presenter?.configure(with: task)
         }
     }
     

@@ -19,6 +19,8 @@ class EditTaskViewController: UIViewController, AnyTaskView {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Colors.backgroundColor
+        setupPresenter()
+        
         createBackButton()
         createKeyboard()
         setupTaskTitleTextView()
@@ -26,19 +28,17 @@ class EditTaskViewController: UIViewController, AnyTaskView {
         view.addSubview(backButton)
         setupConstraints()
         
-        presenter = EditTaskPresenter(view: self, onTaskSelected: { updatedTask in
-            self.onTaskSelected?(updatedTask)
-        })
-        
-        if let task = presenter?.currentTask {
-            presenter?.configure(with: task)
-            logger.log(task.todo)
-        }
     }
     
 }
 
 extension EditTaskViewController {
+    
+    func setupPresenter() {
+        presenter = EditTaskPresenter(view: self, onTaskSelected: { updatedTask in
+            self.onTaskSelected?(updatedTask)
+        })
+    }
     
     private func createBackButton() {
         backButton = {
@@ -49,7 +49,7 @@ extension EditTaskViewController {
                         return
                     }
                     Task { [weak self] in
-                        await self?.handleBackAction()
+                        self?.handleBackAction()
                         self?.dismiss(animated: true, completion: nil)
                     }
                 }
@@ -60,8 +60,8 @@ extension EditTaskViewController {
         }()
     }
     
-    func handleBackAction() async {
-        await presenter?.handleBackAction()
+    func handleBackAction() {
+        presenter?.handleBackAction()
     }
     
     func configureTask(with task: ToDoTask?) {
@@ -127,12 +127,6 @@ extension EditTaskViewController {
 
 extension EditTaskViewController: UITextViewDelegate {
     
-    func textViewDidChange(_ textView: UITextView) {
-        guard let text = textView.text else { return }
-        
-        presenter?.updateTask(with: text)
-    }
-    
     private func setupTaskTitleTextView() {
         let textView = taskTitleTextView
         textView.layer.borderWidth = 1
@@ -168,12 +162,12 @@ extension EditTaskViewController: UITextViewDelegate {
         return attributedString
     }
     
-    /*func textViewDidChange(_ textView: UITextView) {
+    func textViewDidChange(_ textView: UITextView) {
         guard let text = textView.text else { return }
                 
         let attributedText = applyCustomTextStyle(for: text)
         textView.attributedText = attributedText
-    }*/
+    }
     
 }
 
