@@ -42,13 +42,17 @@ class HomePresenter {
 
 extension HomePresenter {
     
-    func handleOpenEditTask(onTaskSelected: ((ToDoTask?) -> Void)?) async {
+    func handleOpenEditTask(onTaskSelected: ((ToDoTask?) -> Void)?) {
         guard let onTaskSelected = onTaskSelected else { return }
-        coordinator.openEditTaskScreen(onTaskSelected: { [weak self] updatedTask in
-            self?.handleTaskSelected(updatedTask: updatedTask)
-            print("Task selected, returning to Home Screen")
-            self?.coordinator.openHomeScreen()
-        })
+        if let taskToEdit = self.todos.first {
+            coordinator.openEditTaskScreen(with: taskToEdit, onTaskSelected: { [weak self] updatedTask in
+                self?.handleTaskSelected(updatedTask: updatedTask)
+                Task {
+                    await logger.log("Task selected, returning to Home Screen")
+                }
+                self?.coordinator.openHomeScreen()
+            })
+        }
     }
     
     func handleTaskSelected(updatedTask: ToDoTask) {
@@ -80,7 +84,7 @@ extension HomePresenter {
                 }
             }
         } catch {
-            print("Error handling todos: \(error)")
+            await logger.log("Error handling todos: \(error)")
         }
     }
     
@@ -94,7 +98,9 @@ extension HomePresenter {
                         try await self?.todosCoreDataManager.save(forMultipleTasks: succeedResult)
                     }
                 case .failure(let error):
-                    print("Failed to get todos: \(error)")
+                    Task {
+                        await logger.log("Failed to get todos: \(error)")
+                    }
                 }
             }
         }
@@ -125,9 +131,9 @@ extension HomePresenter {
     
     func handleTaskID() async -> Int {
         do {
-            return  try await self.todosCoreDataManager.getNextID()
+            return try await self.todosCoreDataManager.getNextID()
         } catch {
-            print("ID getting error: \(error)")
+            await logger.log("ID getting error: \(error)")
             return 1
         }
     }

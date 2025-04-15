@@ -58,12 +58,9 @@ extension HomeView {
     }
     
     func addTask() {
-        let alert = UIAlertController(title: "New Task", message: "Enter task title", preferredStyle: .alert)
-        alert.addTextField()
-        
-        let addAction = UIAlertAction(title: "Add", style: .default) { [weak self] _ in
+        coordinator.openAlert { [weak self] firstText in
             guard let self = self,
-                  let taskTitle = alert.textFields?.first?.text,
+                  let taskTitle = firstText,
                   !taskTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
                 return
             }
@@ -73,14 +70,6 @@ extension HomeView {
                     self?.updateTodosCountForTaskCountLabel()
                 }
             }
-        }
-        
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
-        alert.addAction(addAction)
-        alert.addAction(cancelAction)
-        
-        DispatchQueue.main.async {
-            self.present(alert, animated: true)
         }
     }
     
@@ -140,7 +129,7 @@ extension HomeView {
     }
     
     func showEditTaskViewController(for task: ToDoTask) {
-        coordinator.openEditTaskScreen(onTaskSelected: { [weak self] updatedTask in
+        coordinator.openEditTaskScreen(with: task, onTaskSelected: { [weak self] updatedTask in
             self?.presenter.updateTaskTitle(at: task.id, newTitle: updatedTask.todo)
             self?.tableView.reloadData()
         })
