@@ -23,7 +23,7 @@ extension EditTaskViewController {
                     }
                 }
             )
-            result.setTitle("Back", for: .normal)
+            result.setTitle(NSLocalizedString("edit_task.back", comment: "Back button"), for: .normal)
             view.addSubview(result)
             return result
         }()
@@ -65,8 +65,7 @@ extension EditTaskViewController {
         let toolBar = UIToolbar()
         toolBar.sizeToFit()
         toolBar.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 44)
-        let doneButton = UIBarButtonItem(title: NSLocalizedString("home_view.done", comment: "Done keyboard button"), style: .done, target: self, action: #selector(doneButtonTapped))
-        //doneButton.accessibilityIdentifier = AccessibilityIdentifiers.EditTaskViewController.keyboardDone
+        let doneButton = UIBarButtonItem(title: NSLocalizedString("edit_task.done", comment: "Done keyboard button"), style: .done, target: self, action: #selector(doneButtonTapped))
         let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         toolBar.items = [flexSpace, doneButton]
         taskTitleTextView.inputAccessoryView = toolBar
