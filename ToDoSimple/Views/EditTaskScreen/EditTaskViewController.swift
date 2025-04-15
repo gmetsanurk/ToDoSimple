@@ -164,7 +164,7 @@ extension EditTaskViewController: UITextViewDelegate {
     
     func textViewDidChange(_ textView: UITextView) {
         guard let text = textView.text else { return }
-                
+        presenter?.updateTask(with: text)
         let attributedText = applyCustomTextStyle(for: text)
         textView.attributedText = attributedText
     }

@@ -73,7 +73,7 @@ extension HomeView: AnyHomeView {
     }
     
     func fetchTodosForAnyView(for todoTask: [ToDoTask]) {
-        self.presenter.todos = todoTask
+        presenter.todos = todoTask
         reloadTasks()
         DispatchQueue.main.async {
             self.updateTodosCountForTaskCountLabel()

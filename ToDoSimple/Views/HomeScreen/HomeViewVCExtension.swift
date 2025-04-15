@@ -131,7 +131,7 @@ extension HomeView {
     
     func showEditTaskViewController(for task: ToDoTask) {
         coordinator.openEditTaskScreen(with: task, onTaskSelected: { [weak self] updatedTask in
-            self?.presenter.updateTaskTitle(at: task.id, newTitle: updatedTask.todo)
+            self?.presenter.updateTaskWithTitle(at: task.id, with: updatedTask.todo)
             self?.reloadTasks()
         })
     }

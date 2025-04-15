@@ -35,8 +35,8 @@ extension HomeView : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let task = presenter.getCurrentTasks()[indexPath.row]
         presenter.handleOpenEditTask(at: indexPath.row, onTaskSelected: { [weak self] updatedTask in
-            if let updatedTitle = updatedTask?.todo {
-                self?.presenter.updateTaskTitle(at: task.id, newTitle: updatedTitle)
+            if let updatedTask = updatedTask {
+                self?.presenter.updateTaskWithTitle(at: indexPath.row, with: updatedTask.todo)
                 self?.tableView.reloadData()
             }
         })
