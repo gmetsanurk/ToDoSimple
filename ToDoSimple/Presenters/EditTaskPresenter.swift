@@ -29,17 +29,22 @@ class EditTaskPresenter {
         self.currentTask = currentTask
     }
     
-    func handleBackAction(completion: @escaping () -> Void) async {
+    func handleBackAction() {
         guard let currentTask = currentTask else { return }
         
+        Task {
+            await handleCoreDataSave(for: currentTask)
+        }
+        
+        onTaskSelected(currentTask)
+    }
+    
+    func handleCoreDataSave(for currentTask: ToDoTask) async {
         do {
             try await CoreDataManager.shared.save(forOneTask: currentTask)
             await logger.log("Task saved successfully (handleBack action")
         } catch {
             await logger.log("Failed to save task: \(error)")
         }
-        
-        onTaskSelected(currentTask)
-        completion()
     }
 }

@@ -60,6 +60,10 @@ extension EditTaskViewController {
         }()
     }
     
+    func handleBackAction() async {
+        await presenter?.handleBackAction()
+    }
+    
     func configureTask(with task: ToDoTask?) {
         guard let task = task else {
             return
@@ -67,12 +71,6 @@ extension EditTaskViewController {
         let attributedText = applyCustomTextStyle(for: task.todo)
         taskTitleTextView.attributedText = attributedText
         presenter?.updateTask(with: task.todo)
-    }
-    
-    func handleBackAction() async {
-        await presenter?.handleBackAction() {
-            self.dismiss(animated: true, completion: nil)
-        }
     }
     
     func createKeyboard() {
