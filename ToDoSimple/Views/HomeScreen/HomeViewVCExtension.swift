@@ -24,20 +24,13 @@ extension HomeView {
         view.addSubview(titleLabel)
     }
     
-    /*private func setupSearchBar() {
+    private func setupSearchBar() {
         searchBar.placeholder = "Search Task"
         searchBar.delegate = self
         searchBar.sizeToFit()
         searchBar.showsCancelButton = false
-        tableView.tableHeaderView = searchBar
-    }*/
-    private func setupSearchBar() {
-            searchBar.placeholder = "Search Task"
-            searchBar.delegate = self
-            searchBar.sizeToFit()
-            searchBar.showsCancelButton = false
-            view.addSubview(searchBar)
-        }
+        view.addSubview(searchBar)
+    }
     
     private func setupTableView() {
         tableView.register(HomeTableViewCell.self, forCellReuseIdentifier: cellIdentifier)
@@ -50,6 +43,7 @@ extension HomeView {
         let addTaskButton = UIBarButtonItem(systemItem: .compose, primaryAction: UIAction { [weak self] _ in
             self?.addTask()
         })
+        addTaskButton.width = 44
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         
         updateTodosCountForTaskCountLabel()
@@ -59,9 +53,6 @@ extension HomeView {
         
         taskCountLabel.adjustsFontSizeToFitWidth = true
         taskCountLabel.minimumScaleFactor = 0.5
-        
-        taskCountLabel.frame.size = CGSize(width: 100, height: 30)
-        addTaskButton.width = 44
         
         bottomToolbar.setItems([flexibleSpace, taskCountItem, flexibleSpace, addTaskButton], animated: false)
         view.addSubview(bottomToolbar)
@@ -76,7 +67,7 @@ extension HomeView {
             }
             Task { [weak self] in
                 await self?.presenter.addTask(with: taskTitle) {
-                    self?.tableView.reloadData()
+                    self?.reloadTasks()
                     self?.updateTodosCountForTaskCountLabel()
                 }
             }
@@ -84,7 +75,7 @@ extension HomeView {
     }
     
     func updateTodosCountForTaskCountLabel() {
-        taskCountLabel.text = "\(presenter.todosCount) tasks"
+        self.taskCountLabel.text = "\(self.presenter.todosCount) tasks"
     }
     
     func applyLongGestureRecognizer(for cell: UITableViewCell) {
@@ -140,8 +131,8 @@ extension HomeView {
     
     func showEditTaskViewController(for task: ToDoTask) {
         coordinator.openEditTaskScreen(with: task, onTaskSelected: { [weak self] updatedTask in
-            self?.presenter.updateTaskTitle(at: task.id, newTitle: updatedTask.todo)
-            self?.tableView.reloadData()
+            self?.presenter.updateTaskWithTitle(at: task.id, with: updatedTask.todo)
+            self?.reloadTasks()
         })
     }
     

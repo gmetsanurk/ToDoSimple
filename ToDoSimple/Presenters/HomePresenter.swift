@@ -42,21 +42,23 @@ class HomePresenter {
 
 extension HomePresenter {
     
-    func handleOpenEditTask(onTaskSelected: ((ToDoTask?) -> Void)?) {
-        guard let onTaskSelected = onTaskSelected else { return }
-        if let taskToEdit = self.todos.first {
-            coordinator.openEditTaskScreen(with: taskToEdit, onTaskSelected: { [weak self] updatedTask in
-                self?.handleTaskSelected(updatedTask: updatedTask)
-                Task {
-                    await logger.log("Task selected, returning to Home Screen")
-                }
-                self?.coordinator.openHomeScreen()
-            })
-        }
+    func handleOpenEditTask(at index: Int, onTaskSelected: ((ToDoTask?) -> Void)?) {
+        let taskToEdit = self.todos[index]
+        coordinator.openEditTaskScreen(with: taskToEdit, onTaskSelected: { [weak self] updatedTask in
+            self?.handleTaskSelected(updatedTask: updatedTask)
+            self?.coordinator.openHomeScreen()
+        })
     }
     
     func handleTaskSelected(updatedTask: ToDoTask) {
-        updateTaskTitle(at: updatedTask.id, newTitle: updatedTask.todo)
+        if let index = todos.firstIndex(where: { $0.id == updatedTask.id }) {
+            todos[index] = updatedTask
+            updateTaskWithTitle(at: index, with: updatedTask.todo)
+            self.view.fetchTodosForAnyView(for: todos)
+            Task {
+                await logger.log("Updated task successfully.")
+            }
+        }
     }
     
     func addTask(with title: String, completion: @escaping () -> Void) async {
@@ -66,7 +68,7 @@ extension HomePresenter {
         let newTask = ToDoTask(id: id, todo: title, completed: false, userId: 1)
         
         todos.append(newTask)
-        await handleSave(forOneTask: newTask)
+        handleSave(forOneTask: newTask)
         
         DispatchQueue.main.async {
             completion()
@@ -120,6 +122,7 @@ extension HomePresenter {
     func handleSave(forOneTask task: ToDoTask) {
         Task { [weak self] in
             try await self?.todosCoreDataManager.save(forOneTask: task)
+            await logger.log("Successful save action (HomePresenter).")
         }
     }
     
@@ -144,7 +147,7 @@ extension HomePresenter {
         return isSearching ? filteredTasks : todos
     }
     
-    func updateTaskTitle(at index: Int, newTitle: String) {
+    func updateTaskWithTitle(at index: Int, with newTitle: String) {
         if isSearching {
             filteredTasks[index].todo = newTitle
             if let originalIndex = todos.firstIndex(where: {$0.id == filteredTasks[index].id }) {
@@ -155,7 +158,9 @@ extension HomePresenter {
         }
         
         Task { [weak self] in
-            await self?.handleSave(forOneTask: todos[index])
+            guard let self = self else { return }
+            guard let taskToSave = self.todos[safe: index] else { return }
+            self.handleSave(forOneTask: taskToSave)
         }
     }
     
@@ -172,7 +177,7 @@ extension HomePresenter {
         }
         
         Task { [weak self] in
-            await self?.handleDelete(forOneTask: taskToDelete)
+            self?.handleDelete(forOneTask: taskToDelete)
             DispatchQueue.main.async {
                 completion()
             }
@@ -193,7 +198,7 @@ extension HomePresenter {
         task.completed.toggle()
         
         Task { [weak self] in
-            await self?.handleSave(forOneTask: task)
+            self?.handleSave(forOneTask: task)
             completion()
         }
     }
@@ -202,14 +207,6 @@ extension HomePresenter {
         let task = todos[indexPath.row]
         completion(task)
     }
-    
-    func updateTask(at index: Int, with title: String) {
-        todos[index].todo = title
-        Task { [weak self] in
-            await self?.handleSave(forOneTask: todos[index])
-        }
-    }
-    
     
     func filterTasks(for query: String, completion: @escaping ([ToDoTask]) -> Void) {
         let result = todos.filter { $0.todo.lowercased().contains(query.lowercased()) }

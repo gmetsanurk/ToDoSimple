@@ -73,12 +73,16 @@ extension HomeView: AnyHomeView {
     }
     
     func fetchTodosForAnyView(for todoTask: [ToDoTask]) {
-        self.presenter.todos = todoTask
-        self.tableView.reloadData()
-        updateTodosCountForTaskCountLabel()
+        presenter.todos = todoTask
+        reloadTasks()
+        DispatchQueue.main.async {
+            self.updateTodosCountForTaskCountLabel()
+        }
     }
     
     func reloadTasks() {
-        tableView.reloadData()
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
     }
 }
