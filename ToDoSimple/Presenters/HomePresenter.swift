@@ -28,6 +28,10 @@ class HomePresenter {
         return todos.count
     }
     
+    var displayTodos: [ToDoTask] {
+        return todos.reversed()
+    }
+    
     unowned var view: AnyHomeView!
     let coordinator: Coordinator
     
