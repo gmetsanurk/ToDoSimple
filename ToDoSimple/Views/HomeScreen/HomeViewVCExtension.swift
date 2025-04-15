@@ -24,19 +24,26 @@ extension HomeView {
         view.addSubview(titleLabel)
     }
     
-    private func setupTableView() {
-        tableView.register(HomeTableViewCell.self, forCellReuseIdentifier: cellIdentifier)
-        tableView.dataSource = self
-        tableView.delegate = self
-        view.addSubview(tableView)
-    }
-    
-    private func setupSearchBar() {
+    /*private func setupSearchBar() {
         searchBar.placeholder = "Search Task"
         searchBar.delegate = self
         searchBar.sizeToFit()
         searchBar.showsCancelButton = false
         tableView.tableHeaderView = searchBar
+    }*/
+    private func setupSearchBar() {
+            searchBar.placeholder = "Search Task"
+            searchBar.delegate = self
+            searchBar.sizeToFit()
+            searchBar.showsCancelButton = false
+            view.addSubview(searchBar)
+        }
+    
+    private func setupTableView() {
+        tableView.register(HomeTableViewCell.self, forCellReuseIdentifier: cellIdentifier)
+        tableView.dataSource = self
+        tableView.delegate = self
+        view.addSubview(tableView)
     }
     
     private func setupBottomToolbar() {
@@ -52,6 +59,9 @@ extension HomeView {
         
         taskCountLabel.adjustsFontSizeToFitWidth = true
         taskCountLabel.minimumScaleFactor = 0.5
+        
+        taskCountLabel.frame.size = CGSize(width: 100, height: 30)
+        addTaskButton.width = 44
         
         bottomToolbar.setItems([flexibleSpace, taskCountItem, flexibleSpace, addTaskButton], animated: false)
         view.addSubview(bottomToolbar)
@@ -137,24 +147,26 @@ extension HomeView {
     
     private func setupConstraints() {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        bottomToolbar.translatesAutoresizingMaskIntoConstraints = false
+        searchBar.translatesAutoresizingMaskIntoConstraints = false
         tableView.translatesAutoresizingMaskIntoConstraints = false
+        bottomToolbar.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             titleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            titleLabel.heightAnchor.constraint(equalToConstant: 50)
-        ])
-        
-        NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: bottomToolbar.topAnchor)
-        ])
-        
-        NSLayoutConstraint.activate([
+            titleLabel.heightAnchor.constraint(equalToConstant: 50),
+            
+            searchBar.topAnchor.constraint(equalTo: titleLabel.bottomAnchor),
+            searchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            searchBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            searchBar.heightAnchor.constraint(equalToConstant: 44),
+            
+            tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            tableView.bottomAnchor.constraint(equalTo: bottomToolbar.topAnchor),
+            
             bottomToolbar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             bottomToolbar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             bottomToolbar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
