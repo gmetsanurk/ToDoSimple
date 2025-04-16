@@ -72,7 +72,7 @@ extension HomePresenter {
         let newTask = ToDoTask(id: id, todo: title, completed: false, userId: 1)
         
         todos.append(newTask)
-        handleSave(forOneTask: newTask)
+        await handleSave(forOneTask: newTask)
         
         DispatchQueue.main.async {
             completion()
@@ -123,7 +123,7 @@ extension HomePresenter {
         }
     }
     
-    func handleSave(forOneTask task: ToDoTask) {
+    func handleSave(forOneTask task: ToDoTask) async {
         Task { [weak self] in
             try await self?.todosCoreDataManager.save(forOneTask: task)
             await logger.log("Successful save action (HomePresenter).")
@@ -164,7 +164,7 @@ extension HomePresenter {
         Task { [weak self] in
             guard let self = self else { return }
             guard let taskToSave = self.todos[safe: index] else { return }
-            self.handleSave(forOneTask: taskToSave)
+            await self.handleSave(forOneTask: taskToSave)
         }
     }
     
@@ -192,9 +192,9 @@ extension HomePresenter {
 
 extension HomePresenter {
     
-    func toggleTaskCompletion(at index: Int) {
+    func toggleTaskCompletion(at index: Int) async {
         todos[index].completed.toggle()
-        handleSave(forOneTask: todos[index])
+        await handleSave(forOneTask: todos[index])
     }
     
     func toggleTaskCompletion(at index: Int, completion: @escaping () -> Void) {
@@ -202,7 +202,7 @@ extension HomePresenter {
         task.completed.toggle()
         
         Task { [weak self] in
-            self?.handleSave(forOneTask: task)
+            await self?.handleSave(forOneTask: task)
             completion()
         }
     }

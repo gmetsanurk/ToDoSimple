@@ -17,7 +17,9 @@ class HomeTableViewCell: UITableViewCell {
         button.setImage(UIImage(systemName: "circle"), for: .normal)
         button.setImage(UIImage(systemName: "checkmark.circle"), for: .selected)
         button.addAction(UIAction.init(handler: { [unowned self] _ in
-            self.delegate?.onCellTapped(cell: self, indexPath: indexPath)
+            Task {
+                await self.delegate?.onCellTapped(cell: self, indexPath: indexPath)
+            }
         }), for: .primaryActionTriggered)
         return button
     }()
