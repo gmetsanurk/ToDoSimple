@@ -31,13 +31,14 @@ extension HomeView : UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let realIndex = presenter.todos.count - 1 - indexPath.row
-        let task = presenter.todos[realIndex]
-        presenter.handleOpenEditTask(at: realIndex, onTaskSelected: { [weak self] updatedTask in
-            if let updatedTask = updatedTask {
-                self?.presenter.updateTaskWithTitle(at: indexPath.row, with: updatedTask.todo)
-                self?.tableView.reloadData()
-            }
-        })
+        let displayedTask = presenter.displayTodos[indexPath.row]
+        if let realIndex = presenter.todos.firstIndex(where: { $0.id == displayedTask.id }) {
+            presenter.handleOpenEditTask(at: realIndex, onTaskSelected: { [weak self] updatedTask in
+                if let updatedTask = updatedTask {
+                    self?.presenter.updateTaskWithTitle(at: indexPath.row, with: updatedTask.todo)
+                    self?.tableView.reloadData()
+                }
+            })
+        }
     }
 }
