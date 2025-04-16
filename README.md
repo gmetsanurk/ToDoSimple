@@ -7,26 +7,43 @@
 ### 1. Task Management
 - **Task List:** Displays a list of tasks on the main screen.
 - **Task Details:** Each task includes:
-  - Title
-  - Description(optional, you can add it separately)
+  - Title  
+  - Description (optional, you can add it separately)  
   - Status Bar (completed/incomplete)
 - **Task Operations:**
   - Add new tasks
   - Edit existing tasks
   - Delete tasks
 - **Search Functionality:** Quickly find tasks using a search bar.
-- **Long Press Gestures** Nicely share tasks, also it allows edit and delete tasks as well.
+- **Long Press Gestures:** Nicely share tasks; also allows editing and deleting tasks.
 
 ### 2. Initial Data Loading
 - Loads a default list of tasks from the [DummyJSON API](https://dummyjson.com/todos) on the first launch.
 
 ### 3. Multithreading
-- **Background Processing:** All operations—creating, loading, editing, deleting, and searching tasks—are handled on background threads using **Async/await** and a bit **GCD**.
+- **Background Processing:** All operations—creating, loading, editing, deleting, and searching tasks—are handled on background threads using **async/await** and some **GCD**.
 
 ### 4. CoreData Integration
-- Tasks are saved locally using **CoreData**
+- Tasks are saved locally using **CoreData**.
+- **CoreDataManager:** A custom-built library is used to manage CoreData interactions efficiently.
 
-### 5. Unit Testing
+### 5. Architecture
+- Built using the **MVP (Model-View-Presenter)** pattern combined with the **Coordinator** pattern for better separation of concerns and scalability.
+
+### 6. Continuous Integration
+- Fully configured **CI/CD pipeline** using **GitHub Actions**:
+  - Automatically runs tests on push/pull requests onto master branch.
+  - Ensures stability and code quality through automated checks.
+
+### 7. Unit Testing
 - Includes unit tests for **CoreData** components to ensure maintainability.
 
 ---
+
+## Screenshots
+
+<p align="center">
+  <img src="Screenshots/Screenshot1.png" alt="Main Screen" width="250"/>
+  &nbsp;&nbsp;
+  <img src="Screenshots/Screenshot2.png" alt="Task Details" width="250"/>
+</p>
