@@ -2,21 +2,29 @@ import UIKit
 import CoreDataManager
 
 class HomeTableViewCell: UITableViewCell {
+    weak var delegate: HomeViewCellsHandler?
     
-    let taskLabel: UILabel = {
+    private let taskLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 3
         return label
     }()
     
-    let checkBox: UIButton = {
+    private lazy var checkBox: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(systemName: "circle"), for: .normal)
         button.setImage(UIImage(systemName: "checkmark.circle"), for: .selected)
+        button.addAction(UIAction.init(handler: { [unowned self] _ in
+            Task {
+                await self.delegate?.onCellTapped(cell: self, indexPath: indexPath)
+            }
+        }), for: .primaryActionTriggered)
         return button
     }()
+    
+    private var indexPath: IndexPath!
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -27,10 +35,12 @@ class HomeTableViewCell: UITableViewCell {
         nil
     }
     
-    func configure(with task: ToDoTask) {
+    func configure(with task: ToDoTask, delegate: HomeViewCellsHandler, indexPath: IndexPath) {
         let attributedText = applyCustomTextStyle(for: task.todo, isCompleted: task.completed)
         taskLabel.attributedText = attributedText
         checkBox.isSelected = task.completed
+        self.delegate = delegate
+        self.indexPath = indexPath
     }
     
     private func applyCustomTextStyle(for text: String, isCompleted: Bool) -> NSAttributedString {

@@ -1,0 +1,18 @@
+
+"home_screen.new_task_title" = "Новая заметка";
+"home_screen.new_task_message" = "Введите название заметки";
+"home_screen.new_task_add" = "Добавить";
+"home_screen.new_task_cancel" = "Отменить";
+"home_screen.todo_title" = "To-Do Лист";
+"home_screen.search_bar" = "Поиск заметки";
+"home_screen.tasks" = "заметок";
+"home_screen.share_title" = "Поделиться";
+"home_screen.message_body" = "Хотите поделиться этой заметкой?";
+"home_screen.edit" = "Редактировать";
+"home_screen.share" = "Поделиться";
+"home_screen.delete" = "Удалить";
+"home_screen.cancel" = "Отменить";
+
+"edit_task.back" = "Назад";
+"edit_task.done" = "Готово";
+

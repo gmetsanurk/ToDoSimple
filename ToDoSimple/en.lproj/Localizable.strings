@@ -1,0 +1,18 @@
+
+"home_screen.new_task_title" = "New Task";
+"home_screen.new_task_message" = "Enter task title";
+"home_screen.new_task_add" = "Add";
+"home_screen.new_task_cancel" = "Cancel";
+"home_screen.todo_title" = "To-Do List";
+"home_screen.search_bar" = "Search task";
+"home_screen.tasks" = "tasks";
+"home_screen.share_title" = "Share";
+"home_screen.message_body" = "Would you like to share this task?";
+"home_screen.edit" = "Edit";
+"home_screen.share" = "Share";
+"home_screen.delete" = "Delete";
+"home_screen.cancel" = "Cancel";
+
+"edit_task.back" = "Back";
+"edit_task.done" = "Done";
+
