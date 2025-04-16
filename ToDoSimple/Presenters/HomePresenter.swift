@@ -20,7 +20,6 @@ protocol AnyHomeView: AnyScreen, AnyObject {
 class HomePresenter {
     
     var todos: [ToDoTask] = []
-    
     var filteredTasks: [ToDoTask] = []
     var isSearching = false
     
@@ -29,7 +28,8 @@ class HomePresenter {
     }
     
     var displayTodos: [ToDoTask] {
-        return todos.reversed()
+        let tasksToDisplay = isSearching ? filteredTasks : todos
+        return Array(tasksToDisplay.reversed())
     }
     
     unowned var view: AnyHomeView!
