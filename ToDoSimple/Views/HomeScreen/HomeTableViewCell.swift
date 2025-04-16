@@ -80,16 +80,18 @@ class HomeTableViewCell: UITableViewCell {
         contentView.addSubview(checkBox)
         
         NSLayoutConstraint.activate([
-            checkBox.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
-            checkBox.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            checkBox.widthAnchor.constraint(equalToConstant: 32),
-            checkBox.heightAnchor.constraint(equalToConstant: 32),
+            // Check box
+            checkBox.topAnchor.constraint(equalTo: contentView.topAnchor, constant: AppGeometry.HomeCell.checkBoxTopMargin),
+            checkBox.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: AppGeometry.HomeCell.checkBoxLeadingMargin),
+            checkBox.widthAnchor.constraint(equalToConstant: AppGeometry.HomeCell.checkBoxSize),
+            checkBox.heightAnchor.constraint(equalToConstant: AppGeometry.HomeCell.checkBoxSize),
             
-            taskLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 14),
-            taskLabel.leadingAnchor.constraint(equalTo: checkBox.trailingAnchor, constant: 16),
-            taskLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            //Task label
+            taskLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: AppGeometry.HomeCell.taskLabelTopMargin),
+            taskLabel.leadingAnchor.constraint(equalTo: checkBox.trailingAnchor, constant: AppGeometry.HomeCell.taskLabelLeadingMargin),
+            taskLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -AppGeometry.HomeCell.taskLabelTrailingMargin),
             
-            contentView.heightAnchor.constraint(greaterThanOrEqualToConstant: 90)
+            contentView.heightAnchor.constraint(greaterThanOrEqualToConstant: AppGeometry.HomeCell.cellMinimumHeight)
         ])
     }
     

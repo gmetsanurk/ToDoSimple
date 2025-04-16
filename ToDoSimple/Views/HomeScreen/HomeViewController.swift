@@ -1,18 +1,7 @@
 import UIKit
 import CoreDataManager
 
-actor EventsLogger {
-    func log(_ message: @autoclosure () -> String) {
-        #if LOGS_ENABLED
-        print(message())
-        #endif
-    }
-}
 let logger = EventsLogger()
-
-struct Colors {
-    static let backgroundColor = UIColor.systemBackground
-}
 
 protocol HomeViewCellsHandler: AnyObject {
     func onCellTapped(cell: HomeTableViewCell, indexPath: IndexPath) async
