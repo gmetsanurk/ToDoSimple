@@ -2,12 +2,6 @@
 
 **TodoSimple** is a task management application designed to provide an experience for organizing and managing your to-dos. Below is a breakdown of its features and capabilities:
 
-### Main Screen
-![Main Screen](Screenshots/Screenshot1.png)
-
-### Task Details
-![Task Details](Screenshots/Screenshot2.png)
-
 ## Features
 
 ### 1. Task Management
@@ -45,3 +39,11 @@
 - Includes unit tests for **CoreData** components to ensure maintainability.
 
 ---
+
+## Screenshots
+
+<p align="center">
+  <img src="Screenshots/Screenshot1.png" alt="Main Screen" width="250"/>
+  &nbsp;&nbsp;
+  <img src="Screenshots/Screenshot2.png" alt="Task Details" width="250"/>
+</p>
