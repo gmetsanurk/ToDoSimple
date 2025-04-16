@@ -80,15 +80,17 @@ extension EditTaskViewController {
         taskTitleTextView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
-            backButton.widthAnchor.constraint(equalToConstant: 100),
-            backButton.heightAnchor.constraint(equalToConstant: 44),
+            // Back button
+            backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: AppGeometry.EditTaskScreen.backButtonLeftMargin),
+            backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: AppGeometry.EditTaskScreen.backButtonTopMargin),
+            backButton.widthAnchor.constraint(equalToConstant: AppGeometry.EditTaskScreen.backButtonWidth),
+            backButton.heightAnchor.constraint(equalToConstant: AppGeometry.EditTaskScreen.backButtonHeight),
             
-            taskTitleTextView.topAnchor.constraint(equalTo: backButton.bottomAnchor, constant: 20),
-            taskTitleTextView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            taskTitleTextView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            taskTitleTextView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -16)
+            //Task title textView
+            taskTitleTextView.topAnchor.constraint(equalTo: backButton.bottomAnchor, constant: AppGeometry.EditTaskScreen.textViewTopMargin),
+            taskTitleTextView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: AppGeometry.EditTaskScreen.textViewHorizontalMargin),
+            taskTitleTextView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -AppGeometry.EditTaskScreen.textViewHorizontalMargin),
+            taskTitleTextView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -AppGeometry.EditTaskScreen.textViewBottomMargin)
         ])
     }
 }

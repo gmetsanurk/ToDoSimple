@@ -147,25 +147,29 @@ extension HomeView {
         bottomToolbar.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
+            // Title label
             titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             titleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            titleLabel.heightAnchor.constraint(equalToConstant: 50),
+            titleLabel.heightAnchor.constraint(equalToConstant: AppGeometry.HomeScreen.titleLabelHeight),
             
+            // Search bar
             searchBar.topAnchor.constraint(equalTo: titleLabel.bottomAnchor),
             searchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             searchBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            searchBar.heightAnchor.constraint(equalToConstant: 44),
+            searchBar.heightAnchor.constraint(equalToConstant: AppGeometry.HomeScreen.searchBarHeight),
             
+            // Table view
             tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: bottomToolbar.topAnchor),
             
+            // Bottom toolbar
             bottomToolbar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             bottomToolbar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             bottomToolbar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            bottomToolbar.heightAnchor.constraint(equalToConstant: 50)
+            bottomToolbar.heightAnchor.constraint(equalToConstant: AppGeometry.HomeScreen.bottomToolbarHeight)
         ])
     }
 }
