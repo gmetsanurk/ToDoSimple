@@ -18,14 +18,14 @@ extension HomeView {
     }
     
     private func setupTitleLabel() {
-        titleLabel.text = "To-Do List"
+        titleLabel.text = NSLocalizedString("home_screen.todo_title", comment: "Todo title")
         titleLabel.font = UIFont.systemFont(ofSize: 24, weight: .bold)
         titleLabel.textAlignment = .center
         view.addSubview(titleLabel)
     }
     
     private func setupSearchBar() {
-        searchBar.placeholder = "Search Task"
+        searchBar.placeholder = NSLocalizedString("home_screen.search_bar", comment: "Search bar")
         searchBar.delegate = self
         searchBar.sizeToFit()
         searchBar.showsCancelButton = false
@@ -75,7 +75,8 @@ extension HomeView {
     }
     
     func updateTodosCountForTaskCountLabel() {
-        self.taskCountLabel.text = "\(self.presenter.todosCount) tasks"
+        let taskMessageBody = NSLocalizedString("home_screen.tasks", comment: "Task count label")
+        self.taskCountLabel.text = "\(self.presenter.todosCount) \(taskMessageBody)"
     }
     
     func applyLongGestureRecognizer(for cell: UITableViewCell) {
@@ -97,24 +98,27 @@ extension HomeView {
     }
     
     private func showTaskActions(for task: ToDoTask, at indexPath: IndexPath) {
-        let alertController = UIAlertController(title: "Share Task", message: "Would you like to share this task?", preferredStyle: .actionSheet)
+        let shareTitle = NSLocalizedString("home_screen.share_title", comment: "Share alertController title")
+        let messageBody = NSLocalizedString("home_screen.message_body", comment: "alertController message")
         
-        let editAction = UIAlertAction(title: "Edit", style: .default) { [weak self] _ in
+        let alertController = UIAlertController(title: shareTitle, message: messageBody, preferredStyle: .actionSheet)
+        
+        let editAction = UIAlertAction(title: NSLocalizedString("home_screen.edit", comment: "Edit button"), style: .default) { [weak self] _ in
             self?.showEditTaskViewController(for: task)
         }
         
-        let shareAction = UIAlertAction(title: "Share", style: .default) { [weak self ]_ in
+        let shareAction = UIAlertAction(title: NSLocalizedString("home_screen.share", comment: "Share button"), style: .default) { [weak self ]_ in
             self?.shareTask(task)
         }
         
-        let deleteAction = UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
+        let deleteAction = UIAlertAction(title: NSLocalizedString("home_screen.delete", comment: "Delete button"), style: .destructive) { [weak self] _ in
             self?.presenter.deleteTask(at: indexPath.row) {
                 self?.tableView.deleteRows(at: [indexPath], with: .automatic)
                 self?.updateTodosCountForTaskCountLabel()
             }
         }
         
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+        let cancelAction = UIAlertAction(title: NSLocalizedString("home_screen.cancel", comment: "Cancel button"), style: .cancel)
         
         alertController.addAction(editAction)
         alertController.addAction(shareAction)

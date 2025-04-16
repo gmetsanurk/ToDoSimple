@@ -15,7 +15,6 @@ extension HomeView : UITableViewDelegate, UITableViewDataSource {
         cell.configure(with: task, delegate: self, indexPath: indexPath)
         cell.selectionStyle = .none
         
-        // cell.checkBox.addAction(action, for: .primaryActionTriggered)
         applyLongGestureRecognizer(for: cell)
         return cell
     }

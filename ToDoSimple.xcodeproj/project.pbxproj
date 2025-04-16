@@ -19,6 +19,7 @@
 		66AEA1312DAEAEA400D6BE16 /* Array+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66AEA1302DAEAE9800D6BE16 /* Array+Extension.swift */; };
 		66AEA1332DAEBE0200D6BE16 /* EditTaskVCExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66AEA1322DAEBDF400D6BE16 /* EditTaskVCExtension.swift */; };
 		66AEA1352DAEBE7200D6BE16 /* EdiTaskTVProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66AEA1342DAEBE5D00D6BE16 /* EdiTaskTVProtocol.swift */; };
+		66AEA13B2DAEC2B100D6BE16 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 66AEA1392DAEC2B100D6BE16 /* Localizable.strings */; };
 		66D66F712DA575DF00B61551 /* HomeViewControllerTVProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66D66F702DA575D500B61551 /* HomeViewControllerTVProtocols.swift */; };
 		66D66F732DA576CE00B61551 /* HomeViewVCExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66D66F722DA576C500B61551 /* HomeViewVCExtension.swift */; };
 		66D66F752DA5773E00B61551 /* HomeVIewSBProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66D66F742DA5772600B61551 /* HomeVIewSBProtocol.swift */; };
@@ -37,6 +38,8 @@
 		66AEA1302DAEAE9800D6BE16 /* Array+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extension.swift"; sourceTree = "<group>"; };
 		66AEA1322DAEBDF400D6BE16 /* EditTaskVCExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTaskVCExtension.swift; sourceTree = "<group>"; };
 		66AEA1342DAEBE5D00D6BE16 /* EdiTaskTVProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EdiTaskTVProtocol.swift; sourceTree = "<group>"; };
+		66AEA13A2DAEC2B100D6BE16 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		66AEA13C2DAEC6C100D6BE16 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		66D3D2BE2CE5E9B1009A8B76 /* ToDoSimple.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ToDoSimple.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		66D66F702DA575D500B61551 /* HomeViewControllerTVProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewControllerTVProtocols.swift; sourceTree = "<group>"; };
 		66D66F722DA576C500B61551 /* HomeViewVCExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewVCExtension.swift; sourceTree = "<group>"; };
@@ -105,6 +108,7 @@
 				6617CFBA2D9D269D00E5E3C9 /* Views */,
 				66AEA12F2DAEAE8E00D6BE16 /* Extensions */,
 				6667AD122CEA1B8C00341E91 /* Info.plist */,
+				66AEA1392DAEC2B100D6BE16 /* Localizable.strings */,
 			);
 			path = ToDoSimple;
 			sourceTree = "<group>";
@@ -177,6 +181,7 @@
 			knownRegions = (
 				en,
 				Base,
+				ru,
 			);
 			mainGroup = 66D3D2B52CE5E9B1009A8B76;
 			minimizedProjectReferenceProxies = 1;
@@ -198,6 +203,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				66AEA13B2DAEC2B100D6BE16 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -226,6 +232,18 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		66AEA1392DAEC2B100D6BE16 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				66AEA13A2DAEC2B100D6BE16 /* en */,
+				66AEA13C2DAEC6C100D6BE16 /* ru */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		66D3D2D22CE5E9B2009A8B76 /* Debug */ = {
