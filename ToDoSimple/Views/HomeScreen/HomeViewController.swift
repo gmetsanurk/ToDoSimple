@@ -55,13 +55,6 @@ class HomeView: UIViewController, HomeViewCellsHandler {
         let updatedTask = self.presenter.getCurrentTasks()[indexPath.row]
         
         cell.configure(with: updatedTask, delegate: self, indexPath: indexPath)
-        
-        Task {
-            do {
-                await self.presenter.handleSave(forOneTask: updatedTask)
-                await logger.log("Task saved successfully (checkBox action)")
-            }
-        }
     }
 }
 

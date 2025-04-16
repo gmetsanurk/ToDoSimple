@@ -26,12 +26,7 @@ class HomePresenter {
     var todosCount: Int {
         return todos.count
     }
-    
-    var displayTodos: [ToDoTask] {
-        let tasksToDisplay = isSearching ? filteredTasks : todos
-        return Array(tasksToDisplay.reversed())
-    }
-    
+
     unowned var view: AnyHomeView!
     let coordinator: Coordinator
     
@@ -126,7 +121,7 @@ extension HomePresenter {
     func handleSave(forOneTask task: ToDoTask) async {
         Task { [weak self] in
             try await self?.todosCoreDataManager.save(forOneTask: task)
-            await logger.log("Successful save action (HomePresenter).")
+            await logger.log("Successful save action (handleSave HomePresenter).")
         }
     }
     
@@ -195,16 +190,6 @@ extension HomePresenter {
     func toggleTaskCompletion(at index: Int) async {
         todos[index].completed.toggle()
         await handleSave(forOneTask: todos[index])
-    }
-    
-    func toggleTaskCompletion(at index: Int, completion: @escaping () -> Void) {
-        var task = isSearching ? filteredTasks[index] : todos[index]
-        task.completed.toggle()
-        
-        Task { [weak self] in
-            await self?.handleSave(forOneTask: task)
-            completion()
-        }
     }
     
     func handleLongPress(at indexPath: IndexPath, completion: @escaping (ToDoTask) -> Void) {

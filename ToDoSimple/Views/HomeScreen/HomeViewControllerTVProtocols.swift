@@ -3,7 +3,7 @@ import UIKit
 extension HomeView : UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return presenter.displayTodos.count
+        return presenter.getCurrentTasks().count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -11,7 +11,7 @@ extension HomeView : UITableViewDelegate, UITableViewDataSource {
             return UITableViewCell()
         }
         
-        let task = presenter.displayTodos[indexPath.row]
+        let task = presenter.getCurrentTasks()[indexPath.row]
         cell.configure(with: task, delegate: self, indexPath: indexPath)
         cell.selectionStyle = .none
         
@@ -31,14 +31,12 @@ extension HomeView : UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let displayedTask = presenter.displayTodos[indexPath.row]
-        if let realIndex = presenter.todos.firstIndex(where: { $0.id == displayedTask.id }) {
-            presenter.handleOpenEditTask(at: realIndex, onTaskSelected: { [weak self] updatedTask in
-                if let updatedTask = updatedTask {
-                    self?.presenter.updateTaskWithTitle(at: indexPath.row, with: updatedTask.todo)
-                    self?.tableView.reloadData()
-                }
-            })
-        }
+        let task = presenter.getCurrentTasks()[indexPath.row]
+        presenter.handleOpenEditTask(at: indexPath.row, onTaskSelected: { [weak self] updatedTask in
+            if let updatedTask = updatedTask {
+                self?.presenter.updateTaskWithTitle(at: indexPath.row, with: updatedTask.todo)
+                self?.tableView.reloadData()
+            }
+        })
     }
 }
